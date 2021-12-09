@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Клиенты</h1>
+<div>
+
+        <div style="float:right;">
+            Сортировать по:
+            <form action="{% url 'clients' %}" method="get" id="sortClient">
+                <select style="float:right;" form="sortClient" name="order_by">
+                   <option selected="selected"  value="company_name"> название по возрастанию</option>
+                   <option value="-company_name"> название по убыванию</option>
+                   <option value="created" > дата создания по возрастанию </option>
+                   <option value="-created" > дата создания по убыванию </option>
+                   <option value="updated" > дата изменения по возрастанию </option>
+                   <option value="-updated" > дата изменения по убыванию </option>
+                </select>
+                <p><input type="submit" value="Применить"></p>
+    </form>
+
+        </div>
+
+    <br/>
+
+    {% if client_list %}
+    <table  class="clientinf">
+        <tr>
+        <th>Компания</th>
+        <th>Контактное лицо</th>
+        <th>Добавлено</th>
+        <th>Изменено</th>
+        <th>Адрес</th>
+        <th>Телефон</th>
+        <th>Email</th>
+        </tr>
+
+      {% for client in client_list %}
+      <tr>
+          <td> <a href="{{client.get_url }}"> {{ client.company_name }}</a> </td>
+          <td>  {{client.contact_person}}</td>
+           <td>  {{client.created}}</td>
+           <td>  {{client.updated}}</td>
+           <td>  {{client.address}}</td>
+           <td rowspan="2">  <ul>
+               {% for phone in client.phone_set.all %}
+                 <li>{{phone.number}}</li>
+               {% endfor %}
+           </ul></td>
+          <td rowspan="2">
+              <ul>
+                  {% for mail in client.email_set.all %}
+                 <li>{{mail.email_address}}</li>
+               {% endfor %}
+              </ul>
+          </td>
+      </tr>
+        <tr> <td colspan="5">{{client.description}}</td></tr>
+        <tr><td colspan="7">  </td></tr>
+
+      {% endfor %}
+
+    </table>
+    {% else %}
+      <p>Нет доступных клиентов для просмотра</p>
+    {% endif %}
+</div>
+
+{% endblock %}

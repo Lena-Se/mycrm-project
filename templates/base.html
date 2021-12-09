@@ -11,7 +11,7 @@
 
   <!-- Добавление дополнительного статического CSS файла -->
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/crm.css' %}">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
   <div class="container-fluid">
 
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-1">
       {% block sidebar %}
       <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>

@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 
 # Create your models here.
@@ -21,13 +22,14 @@ class Email(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.address
+        return self.email_address
 
 
 class Client(models.Model):
     company_name = models.CharField(max_length=500, verbose_name='компания')
     contact_person = models.CharField(max_length=300, verbose_name='контактное лицо (ФИО)')
-    description = models.TextField(blank=True, verbose_name='описание')
+    description = RichTextField(blank=True, verbose_name='описание')
+    # models.TextField(blank=True, verbose_name='описание')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
     address = models.CharField(max_length=500, blank=True, verbose_name='адрес')
@@ -39,7 +41,10 @@ class Client(models.Model):
         verbose_name_plural = 'Клиенты'
 
     def get_url(self):
-        return reverse('products_by_category', args=[self.slug])
+        print(self.slug)
+        print(reverse('client_detail', args=[self.slug]))
+        return reverse('client_detail', args=[self.slug])
+        #return reverse('client-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.company_name
