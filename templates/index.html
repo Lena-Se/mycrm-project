@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-
+{% block title %} ITM CRM {% endblock %}
 {% block content %}
-<title>My CRM</title>
+<div class="container-fluid">
+
 <h1>CRM</h1>
 
 <h2>Добро пожаловать!</h2>
 
-  <p>The library has the following record counts:</p>
+  <p>В нашей CRM</p>
   <ul>
     <li><a href="{% url 'clients' %}"><strong>Клиенты:</strong> </a> </li>
   </ul>
-
+</div>
 {% endblock %}

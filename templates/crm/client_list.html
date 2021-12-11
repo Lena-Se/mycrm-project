@@ -1,22 +1,26 @@
 {% extends "base.html" %}
-
+{% block title %} ITM CRM - клиенты {% endblock %}
 {% block content %}
 
-    <h1>Клиенты</h1>
-<div>
 
+<div class="container-fluid"><p>     <a href="{% url 'client_create' %}">Создать</a> </p>
         <div style="float:right;">
             Сортировать по:
-            <form action="{% url 'clients' %}" method="get" id="sortClient">
-                <select style="float:right;" form="sortClient" name="order_by">
-                   <option selected="selected"  value="company_name"> название по возрастанию</option>
-                   <option value="-company_name"> название по убыванию</option>
-                   <option value="created" > дата создания по возрастанию </option>
-                   <option value="-created" > дата создания по убыванию </option>
-                   <option value="updated" > дата изменения по возрастанию </option>
-                   <option value="-updated" > дата изменения по убыванию </option>
-                </select>
-                <p><input type="submit" value="Применить"></p>
+            <form action="" method="get" id="sortClient">
+                {{ filter.form.as_p }}
+                    <input type="submit" />
+
+<!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
+<!--                   -->
+<!--                   <option  value="company_name"> название по возрастанию</option>-->
+<!--                   <option value="-company_name"> название по убыванию</option>-->
+<!--                   <option value="created" > дата создания по возрастанию </option>-->
+<!--                   <option value="-created" > дата создания по убыванию </option>-->
+<!--                   <option value="updated" > дата изменения по возрастанию </option>-->
+<!--                   <option value="-updated" > дата изменения по убыванию </option>-->
+<!--                </select>-->
+<!--                <noscript><input type="submit" value="Submit"></noscript>-->
+
     </form>
 
         </div>

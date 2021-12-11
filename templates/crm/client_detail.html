@@ -1,10 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>crm</title>
-</head>
-<body>
-<h1>Детальная информация по клиенту {{client.company_name}} </h1>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %} ITM CRM - {{ client.company_name }} {% endblock %}
+
+{% block content %}
+<div>
+  <h1>Компания: {{ client.company_name }}</h1>
+
+  <p><strong>Контактное лицо (руководитель):</strong> {{ client.contact_person }}</p> <!-- author detail link not yet defined -->
+  <p><strong>Описание:</strong> {{ client.description }}</p>
+  <p><strong>Адрес:</strong> {{ client.address }}</p>
+  <p><strong>Телефоны:</strong>  <ul>
+               {% for phone in client.phone_set.all %}
+                 <li>{{phone.number}}</li>
+               {% endfor %}
+           </ul></p>
+  <p><strong>Email:</strong> <ul>
+                  {% for mail in client.email_set.all %}
+                 <li>{{mail.email_address}}</li>
+               {% endfor %}
+              </ul></p>
+
+     <ul>
+
+         <p>     <a href="{% url 'client_update' client.slug %}  ">Редактировать</a> </p>
+
+<!--      <li>-->
+<!--           <a href="№">Удалить</a> -->
+<!--      </li>-->
+
+    </ul>
+</div>
+{% endblock %}
