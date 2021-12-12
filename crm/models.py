@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 
 class Phone(models.Model):
@@ -47,7 +47,7 @@ class Client(models.Model):
         verbose_name_plural = 'Клиенты'
 
     def get_url(self):
-        return reverse('client_detail', args=[self.slug])
+        return reverse_lazy('client_detail', args=[self.slug])
 
     def __str__(self):
         return self.company_name

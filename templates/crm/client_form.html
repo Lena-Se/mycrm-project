@@ -9,8 +9,11 @@
         {% csrf_token %}
         <table>
             {{ form.as_p }}
+
         </table>
-        <input type="submit" value="Submit" />
+        <p>{{ phonesFormset.as_p }}</p>
+        <p>{{ emailsFormset.as_p }}</p>
+        <input type="submit" value="Сохранить" />
     </form>
 </div>
 {% endblock %}
