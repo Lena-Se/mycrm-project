@@ -1,18 +1,26 @@
 {% extends "base.html" %}
-{% block title %} ITM CRM - клиенты {% endblock %}
+{% block title %} ITM CRM - проекты {% endblock %}
 {% block content %}
 
 
 <div class="container-fluid">
-    <p> <h1>Клиенты</h1>     <a href="{% url 'client-create' %}">Добавить</a> </p>
+    <p> <h1>Прокеты</h1>     <a href="{% url 'client-create' %}">Добавить</a> </p>
         <div style="float:right;">
 <!--            Сортировать по:-->
-            <form action="{% url 'clients' %}" method="get" id="sortClient">
-                {{ filter.form.as_p }}
-                    <input type="submit" value="Применить"/>
+            <form action="{% url 'projects' %}" method="get" id="sortClient">
+<!--                {{ filter.form.as_p }}-->
+<!--                    <input type="submit" value="Submit"/>-->
 
-
-
+<!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
+<!--                   -->
+<!--                   <option  value="company_name"> название по возрастанию</option>-->
+<!--                   <option value="-company_name"> название по убыванию</option>-->
+<!--                   <option value="created" > дата создания по возрастанию </option>-->
+<!--                   <option value="-created" > дата создания по убыванию </option>-->
+<!--                   <option value="updated" > дата изменения по возрастанию </option>-->
+<!--                   <option value="-updated" > дата изменения по убыванию </option>-->
+<!--                </select>-->
+<!--                <noscript><input type="submit" value="Submit"></noscript>-->
 
             </form>
 

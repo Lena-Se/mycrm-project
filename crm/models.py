@@ -46,8 +46,8 @@ class Client(models.Model):
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
 
-    def get_url(self):
-        return reverse_lazy('client_detail', args=[self.slug])
+    def get_absolute_url(self):
+        return reverse('client-details', args=[self.slug])
 
     def __str__(self):
         return self.company_name

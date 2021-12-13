@@ -60,3 +60,25 @@
   </div>
 </body>
 </html>
+
+ # def get(self, request, *args, **kwargs):
+    #     # self.object = None
+    #     # form_class = self.get_form_class()
+    #     # form = self.get_form(form_class)
+    #     formsetPhone = PhoneInlineFormset(instance=self.object)
+    #     formsetEmail = EmailInlineFormset(instance=self.object)
+    #     return self.render_to_response(
+    #         self.get_context_data(phonesFormset=formsetPhone,
+    #                               emailsFormset=formsetEmail))
+    #
+    # def post(self, request, *args, **kwargs):
+    #     # self.object = None
+    #     # form_class = self.get_form_class()
+    #     # form = self.get_form(form_class)
+    #     formsetPhone = PhoneInlineFormset(request.POST, isinstance(self.object))
+    #     formsetEmail = EmailInlineFormset(request.POST,  instance=self.object)
+    #
+    #     if self.form.is_valid() and formsetPhone.is_valid() and formsetEmail.is_valid():
+    #         return self.form_valid(formsetPhone, formsetEmail)
+
+    <!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>-->

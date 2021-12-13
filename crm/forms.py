@@ -14,5 +14,5 @@ class PhoneForm(ModelForm):
         fields = ['number']
 
 
-PhoneInlineFormset = inlineformset_factory(Client, Phone, fields=['number'], extra=3)
-EmailInlineFormset = inlineformset_factory(Client, Email, fields=['email_address'], extra=3)
+PhoneInlineFormset = inlineformset_factory(Client, Phone, fields=['number'], extra=1)
+EmailInlineFormset = inlineformset_factory(Client, Email, fields=['email_address'], extra=1)
