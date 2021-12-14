@@ -1,6 +1,7 @@
 from ckeditor.fields import RichTextField
 from django.core.validators import RegexValidator
 from django.db import models
+from .constants import INTERACTION_CHOICES
 
 # Create your models here.
 from django.urls import reverse, reverse_lazy
@@ -15,6 +16,11 @@ class Phone(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('client', '-created', '-updated')
+        verbose_name = 'Телефон'
+        verbose_name_plural = 'Телефоны'
+
     def __str__(self):
         return self.number
 
@@ -25,11 +31,17 @@ class Email(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('client', 'email_address', '-created', '-updated')
+        verbose_name = 'Email'
+        verbose_name_plural = 'Email адреса'
+
     def __str__(self):
         return self.email_address
 
 
 class Client(models.Model):
+    slug_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
     company_name = models.CharField(max_length=500, verbose_name='компания')
     contact_person = models.CharField(max_length=300, verbose_name='контактное лицо (ФИО)',
                                       help_text='ФИО контактного лица / руководителя')
@@ -38,10 +50,9 @@ class Client(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
     address = models.CharField(max_length=500, blank=True, verbose_name='адрес')
-    slug = models.SlugField(max_length=250, unique=True)
+    slug = models.SlugField(max_length=250, unique=True, validators=[slug_validator], db_index=True)
 
     class Meta:
-
         ordering = ('company_name', 'created', 'updated')
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
@@ -64,12 +75,11 @@ class Project(models.Model):
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
 
     class Meta:
-
         ordering = ('name', 'start_date', 'end_date')
         verbose_name = 'Проект'
         verbose_name_plural = 'Прокеты'
 
-    def get_url(self):
+    def get_absolute_url(self):
         return reverse('project_detail', args=[self.id])
 
     def __str__(self):
@@ -78,16 +88,14 @@ class Project(models.Model):
 
 class Interaction(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие')
-    reference_channel = models.CharField(max_length=25, choices=[('request','Заявка'), ('mail', 'Письмо'),
-                                                                 ('site', 'Сайт'), ('call', 'Звонок'),
-                                                                 ('initiative', 'Инициатива компании')])
+    reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES)
     description = RichTextField(blank=True, verbose_name='описание')
     like = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
 
-    def get_url(self):
+    def get_absolute_url(self):
         return reverse('interaction_detail', args=[self.id])
 
     def __str__(self):
-        return self.reference_channel  + " - " + self.project.name
+        return self.reference_channel + " - " + self.project.name

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %} ITM CRM - клиенты {% endblock %}
+{% load custom_tags %}
 {% block content %}
 
 
@@ -8,11 +9,20 @@
         <div style="float:right;">
 <!--            Сортировать по:-->
             <form action="{% url 'clients' %}" method="get" id="sortClient">
-                {{ filter.form.as_p }}
+                {{ filterset.form.as_p }}
                     <input type="submit" value="Применить"/>
 
 
-
+<!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
+<!--                   -->
+<!--                   <option  value="company_name"> название по возрастанию</option>-->
+<!--                   <option value="-company_name"> название по убыванию</option>-->
+<!--                   <option value="created" > дата создания по возрастанию </option>-->
+<!--                   <option value="-created" > дата создания по убыванию </option>-->
+<!--                   <option value="updated" > дата изменения по возрастанию </option>-->
+<!--                   <option value="-updated" > дата изменения по убыванию </option>-->
+<!--                </select>-->
+<!--                <noscript><input type="submit" value="Submit"></noscript>-->
 
             </form>
 
@@ -63,13 +73,21 @@
       <div class="pagination">
           <span class="page-links">
               {% if page_obj.has_previous %}
-                  <a href="{% url 'clients' %}?page={{ page_obj.previous_page_number }}">пред.</a>
+<!--                  <a href="{% url 'clients' %}?page={{ page_obj.previous_page_number }} "> пред.</a>-->
+              <a href="?{% param_replace page=page_obj.previous_page_number %} "> пред.</a>
               {% endif %}
               <span class="page-current">
                   стр. {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
               </span>
+<!--              {% if page_obj.has_next %}-->
+<!--                  <a href="?page={{ page_obj.next_page_number }} "> след. </a>-->
+<!--&lt;!&ndash;              <a href="{% url 'clients' %}?page={{ page_obj.next_page_number }} "> след. </a> &ndash;&gt;-->
+<!--              {% endif %}-->
               {% if page_obj.has_next %}
-                  <a href="{% url 'clients' %}?page={{ page_obj.next_page_number }}">след.</a>
+                    {% if page_obj.next_page_number != paginator.num_pages %}
+                         <a href="?{% param_replace page=page_obj.next_page_number %}">след.</a>
+                    {% endif %}
+                    <a href="?{% param_replace page=paginator.num_pages %}">{{ paginator.num_pages }}</a>
               {% endif %}
           </span>
       </div>

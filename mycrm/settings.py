@@ -27,15 +27,21 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-
+# built-in apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',]
+
+# custom apps
+INSTALLED_APPS += [
     'crm.apps.CrmConfig',
+]
+# django-packages apps
+INSTALLED_APPS += [
     'ckeditor',
     'django_filters',
 ]
