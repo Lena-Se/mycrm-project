@@ -43,11 +43,6 @@ class ClientsListView(FilteredListView):
     filterset_class = ClientFilter
 
 
-
-
-
-
-
     # def get_queryset(self):
     #     new_order = self.request.GET.get('ordering', "company_name")
     #     new_context = Client.objects.filter()
