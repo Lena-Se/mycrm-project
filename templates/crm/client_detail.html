@@ -2,7 +2,9 @@
 {% block title %} ITM CRM - {{ client.company_name }} {% endblock %}
 
 {% block content %}
-<div>
+<div class="container">
+    <div class="row">
+<div class="col-4" >
   <h1>Компания: {{ client.company_name }}</h1>
 
   <p><strong>Контактное лицо (руководитель):</strong> {{ client.contact_person }}</p> <!-- author detail link not yet defined -->
@@ -28,5 +30,15 @@
 <!--      </li>-->
 
     </ul>
+</div>
+<div class="col-4">
+    <p> <h3> Проекты </h3>  <a href="{% url 'project-create' client.slug %} ">Добавить</a> </p>
+    <ol>
+         {% for project in client.project_set.all %}
+          <li><a href="project.get_absolute_url"> {{ project.name }} </a></li>
+        {% endfor %}
+    </ol>
+</div>
+        </div>
 </div>
 {% endblock %}

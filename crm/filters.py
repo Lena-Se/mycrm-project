@@ -1,6 +1,6 @@
 import django_filters
 from .constants import SORT_CHOICES
-from .models import Client
+from .models import Client, Project
 
 
 class ClientFilter(django_filters.FilterSet):
@@ -17,6 +17,19 @@ class ClientFilter(django_filters.FilterSet):
         fields = []
 
 
+class ProjectFilter(django_filters.FilterSet):
+
+    ordering = django_filters.OrderingFilter(empty_label=None,
+                                             fields=(
+                                                 ('company', 'компания'),
+                                                 ('name', 'название'),
+                                                 ('created', 'дата создания'),
+                                                 ('updated', 'дата изменения'),
+                                             ), label='сортировать по:', initial=['company_name', 'названию'])
+
+    class Meta:
+        model = Project
+        fields = []
 
 
 

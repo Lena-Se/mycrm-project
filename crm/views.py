@@ -1,18 +1,24 @@
 # from django.http import HttpResponseRedirect, request
 # from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django_filters.views import FilterView
 
-from .filters import ClientFilter
-from .models import Client
+from .filters import ClientFilter, ProjectFilter
+from .models import Client, Project
 from .forms import PhoneInlineFormset, EmailInlineFormset
 
 
 # Create your views here.
 class IndexTemplateView(generic.TemplateView):
     template_name = 'index.html'
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['client_count'] = Client.objects.all().count()
+        context['project_count'] = Project.objects.all().count()
+        return context
 
 
 class FilteredListView(generic.ListView):
@@ -42,30 +48,6 @@ class ClientsListView(FilteredListView):  # (FilterView):  # (FilteredListView):
     template_name = 'crm/client_list.html'
     filterset_class = ClientFilter
 
-    # def get_filterset_kwargs(self, *args):
-    #     kwargs = super().get_filterset_kwargs(*args)
-    #
-    #     if not kwargs['data']:
-    #         kwargs['data'] = {'ordering': 'company_name'}
-    #     elif 'ordering' not in kwargs['data']:
-    #         kwargs['data']['ordering'] = 'company_name'
-    #     return kwargs
-
-        # def get_queryset(self):
-    #     new_order = self.request.GET.get('ordering', "company_name")
-    #     new_context = Client.objects.filter()
-    #     return new_context
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(ClientsListView, self).get_context_data(**kwargs)
-    #     # context['order_by'] = self.request.GET.get('order_by', "company_name")
-    #     context['filter'] = self.filter_clas
-    #     return context
-
-    # def get_ordering(self):
-    #     ordering = self.request.GET.get('ordering')
-    #     return ordering
-
 
 class ClientDetailView(generic.DetailView):
     model = Client
@@ -74,6 +56,7 @@ class ClientDetailView(generic.DetailView):
 class ClientCreateView(generic.CreateView):
     model = Client
     fields = ['company_name', 'contact_person', 'description', 'address', 'slug']
+    success_url = reverse_lazy('clients')
 
     def get_context_data(self, **kwargs):
         context = super(ClientCreateView, self).get_context_data(**kwargs)
@@ -101,8 +84,8 @@ class ClientCreateView(generic.CreateView):
         else:
             return super().form_invalid(form)
 
-    def get_success_url(self):
-        return reverse_lazy('clients')
+    # def get_success_url(self):
+    #     return reverse_lazy('clients')
 
 
 class ClientUpdateView(generic.UpdateView):
@@ -151,3 +134,59 @@ class ClientUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('client-details', args=[self.object.slug])
+
+
+class ProjectsListView(FilteredListView):
+    model = Project
+    paginate_by = 5
+    paginate_orphans = 1
+    template_name = 'crm/project_list.html'
+    filterset_class = ProjectFilter
+
+
+class ProjectDetailView(generic.DetailView):
+    model = Project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        # Pass the filterset to the template - it provides the form.
+        client = get_object_or_404(Client, slug=self.kwargs['slug'])
+        context['client'] = client
+        return context
+
+
+
+class ProjectCreateView(generic.CreateView):
+    model = Project
+    fields = ['name', 'description', 'start_date', 'end_date', 'price']
+    client = Nones
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectCreateView, self).get_context_data(**kwargs)
+        # Pass the filterset to the template - it provides the form.
+        self.client = get_object_or_404(Client, slug=self.kwargs['client_slug'])
+        context['client'] = self.client
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('client-details', args=[self.client.slug])
+
+
+class ProjectUpdateView(generic.UpdateView):
+    """
+    Class representing ViewForm for editing data for object of Project model.
+    Based on generic.UpdateView
+    attributes:
+    model - model-class representing object's data
+    fields - list of fields for displaying on form
+
+    methods:
+    get_context_data(self, **kwargs) - overriding the standard get_context_data method for
+    to expand the context with inlineFormSets of related data.
+    Returns extended context.
+    """
+    model = Client
+    fields = ['name', 'description', 'start_date', 'end_date', 'price']
+
+    def get_success_url(self):
+        return reverse_lazy('client-details', args=[self.object.company.slug])

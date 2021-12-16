@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %} ITM CRM - клиенты {% endblock %}
-{% load custom_tags %}
+<!--{% load custom_tags %}-->
 {% block content %}
 
 
@@ -72,31 +72,24 @@
 
     </table>
 
-     {% if is_paginated %}
-      <div class="pagination">
-          <span class="page-links">
-<!--              <a href="?{% param_replace page=1 %}"> 1   </a>-->
-              {% if page_obj.has_previous %}
-<!--                  <a href="{% url 'clients' %}?page={{ page_obj.previous_page_number }} "> пред.</a>-->
-              <a href="?{% param_replace page=page_obj.previous_page_number %} "> пред.</a>
+<!--     {% if is_paginated %}-->
+<!--      <div class="pagination">-->
+<!--          <span class="page-links">-->
 
-              {% endif %}
-              <span class="page-current">
-                  стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-              </span>
-<!--              {% if page_obj.has_next %}-->
-<!--                  <a href="?page={{ page_obj.next_page_number }} "> след. </a>-->
-<!--&lt;!&ndash;              <a href="{% url 'clients' %}?page={{ page_obj.next_page_number }} "> след. </a> &ndash;&gt;-->
+<!--              {% if page_obj.has_previous %}-->
+<!--              <a href="?{% param_replace page=page_obj.previous_page_number %} "> пред.</a>-->
+
 <!--              {% endif %}-->
-              {% if page_obj.has_next %}
-<!--                    {% if page_obj.next_page_number != paginator.num_pages %}-->
-                         <a href="?{% param_replace page=page_obj.next_page_number %}">след.</a>
-<!--                    {% endif %}-->
-<!--                    <a href="?{% param_replace page=paginator.num_pages %}">   {{ paginator.num_pages }}</a>-->
-              {% endif %}
-          </span>
-      </div>
-  {% endif %}
+<!--              <span class="page-current">-->
+<!--                  стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.-->
+<!--              </span>-->
+
+<!--              {% if page_obj.has_next %}-->
+<!--                         <a href="?{% param_replace page=page_obj.next_page_number %}">след.</a>-->
+<!--              {% endif %}-->
+<!--          </span>-->
+<!--      </div>-->
+<!--  {% endif %}-->
 
     {% else %}
       <p>Нет доступных клиентов для просмотра</p>

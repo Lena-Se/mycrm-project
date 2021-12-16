@@ -9,7 +9,10 @@
 
   <p>ITM CRM содержит: </p>
   <ul>
-    <li><a href="{% url 'clients' %}"><strong>Клиенты:</strong> </a> </li>
+    <li><a href="{% url 'clients' %}"><strong>{{client_count}}  клиентов:</strong> </a> </li>
+  </ul>
+  <ul>
+    <li><a href="{% url 'projects' %}"><strong>{{project_count}}  проектов:</strong> </a> </li>
   </ul>
 </div>
 {% endblock %}

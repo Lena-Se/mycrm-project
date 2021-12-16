@@ -67,20 +67,20 @@ class Client(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=500, verbose_name='Название проекта')
     description = RichTextField(blank=True, verbose_name='описание')
-    start_date = models.DateTimeField(verbose_name='дата начала')
-    end_date = models.DateTimeField(blank=True, verbose_name='дата окончания')
+    start_date = models.DateField(verbose_name='дата начала')
+    end_date = models.DateField(blank=True, verbose_name='дата окончания', null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     company = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, verbose_name='компания')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
 
     class Meta:
-        ordering = ('name', 'start_date', 'end_date')
+        ordering = ('company', 'name', 'created')
         verbose_name = 'Проект'
         verbose_name_plural = 'Прокеты'
 
     def get_absolute_url(self):
-        return reverse('project_detail', args=[self.id])
+        return reverse('project-details', args=str([self.id]))
 
     def __str__(self):
         return self.name
