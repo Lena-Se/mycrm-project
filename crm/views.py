@@ -1,4 +1,3 @@
-
 # from django.http import HttpResponseRedirect, request
 # from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -13,6 +12,7 @@ from .forms import PhoneInlineFormset, EmailInlineFormset
 # Create your views here.
 class IndexTemplateView(generic.TemplateView):
     template_name = 'index.html'
+    
 
 
 class FilteredListView(generic.ListView):
@@ -35,15 +35,23 @@ class FilteredListView(generic.ListView):
         return context
 
 
-class ClientsListView(FilteredListView):
+class ClientsListView(FilteredListView):  # (FilterView):  # (FilteredListView):
     model = Client
-    paginate_by = 5
+    paginate_by = 3
     paginate_orphans = 1
     template_name = 'crm/client_list.html'
     filterset_class = ClientFilter
 
+    # def get_filterset_kwargs(self, *args):
+    #     kwargs = super().get_filterset_kwargs(*args)
+    #
+    #     if not kwargs['data']:
+    #         kwargs['data'] = {'ordering': 'company_name'}
+    #     elif 'ordering' not in kwargs['data']:
+    #         kwargs['data']['ordering'] = 'company_name'
+    #     return kwargs
 
-    # def get_queryset(self):
+        # def get_queryset(self):
     #     new_order = self.request.GET.get('ordering', "company_name")
     #     new_context = Client.objects.filter()
     #     return new_context
