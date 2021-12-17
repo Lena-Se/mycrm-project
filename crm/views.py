@@ -1,13 +1,9 @@
-# from django.http import HttpResponseRedirect, request
-# from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-from django_filters.views import FilterView
-
 from .filters import ClientFilter, ProjectFilter
 from .models import Client, Project
-from .forms import PhoneInlineFormset, EmailInlineFormset
+from .forms import PhoneInlineFormset, EmailInlineFormset, ProjectForm
 
 
 # Create your views here.
@@ -84,9 +80,6 @@ class ClientCreateView(generic.CreateView):
         else:
             return super().form_invalid(form)
 
-    # def get_success_url(self):
-    #     return reverse_lazy('clients')
-
 
 class ClientUpdateView(generic.UpdateView):
     """
@@ -147,26 +140,35 @@ class ProjectsListView(FilteredListView):
 class ProjectDetailView(generic.DetailView):
     model = Project
 
-    def get_context_data(self, **kwargs):
-        context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        # Pass the filterset to the template - it provides the form.
-        client = get_object_or_404(Client, slug=self.kwargs['slug'])
-        context['client'] = client
-        return context
-
+    # def get_context_data(self, **kwargs):
+    #     context = super(ProjectDetailView, self).get_context_data(**kwargs)
+    #     # Pass the filterset to the template - it provides the form.
+    #     client = get_object_or_404(Client, slug=self.kwargs['slug'])
+    #     context['client'] = client
+    #     return context
 
 
 class ProjectCreateView(generic.CreateView):
     model = Project
-    fields = ['name', 'description', 'start_date', 'end_date', 'price']
-    client = Nones
+    form_class = ProjectForm
+    client = None
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
-        # Pass the filterset to the template - it provides the form.
         self.client = get_object_or_404(Client, slug=self.kwargs['client_slug'])
+        print(self.client)
         context['client'] = self.client
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.client = get_object_or_404(Client, slug=self.kwargs['client_slug'])
+        return super().post(request, *args, kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.company = self.client
+        self.object.save()
+        return super(ProjectCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('client-details', args=[self.client.slug])
@@ -178,15 +180,14 @@ class ProjectUpdateView(generic.UpdateView):
     Based on generic.UpdateView
     attributes:
     model - model-class representing object's data
-    fields - list of fields for displaying on form
 
     methods:
-    get_context_data(self, **kwargs) - overriding the standard get_context_data method for
-    to expand the context with inlineFormSets of related data.
-    Returns extended context.
+
     """
-    model = Client
-    fields = ['name', 'description', 'start_date', 'end_date', 'price']
+    model = Project
+    form_class = ProjectForm
 
     def get_success_url(self):
         return reverse_lazy('client-details', args=[self.object.company.slug])
+
+

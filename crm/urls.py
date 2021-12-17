@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.urls import path, include
+from django.views.i18n import JavaScriptCatalog
 from . import views
 
 
@@ -14,13 +15,15 @@ project_urlpatterns = [
     path('', views.ProjectsListView.as_view(), name='projects'),
     path('details/<int:pk>/', views.ProjectDetailView.as_view(), name='project-details'),
     path('create/<slug:client_slug>/', views.ProjectCreateView.as_view(), name='project-create'),
-    path('update/<slug:client_slug>/<int:pk>/', views.ProjectUpdateView.as_view(), name='project-update'),
+    path('update/<int:pk>/', views.ProjectUpdateView.as_view(), name='project-update'),
 ]
 
 urlpatterns = [
     path('', views.IndexTemplateView.as_view(), name='index'),
     path('clients/', include(client_urlpatterns)),
     path('projects/', include(project_urlpatterns)),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    # url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 # urlpatterns = [

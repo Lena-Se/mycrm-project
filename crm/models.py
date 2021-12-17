@@ -80,7 +80,7 @@ class Project(models.Model):
         verbose_name_plural = 'Прокеты'
 
     def get_absolute_url(self):
-        return reverse('project-details', args=str([self.id]))
+        return reverse('project-details', args=[str(self.id)])
 
     def __str__(self):
         return self.name

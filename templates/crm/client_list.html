@@ -65,7 +65,7 @@
               </ul>
           </td>
       </tr>
-        <tr> <td colspan="5">{{client.description}}</td></tr>
+        <tr> <td colspan="5">{{client.description | safe | striptags| linebreaks}}</td></tr>
         <tr><td colspan="7">  </td></tr>
 
       {% endfor %}

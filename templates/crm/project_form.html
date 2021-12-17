@@ -3,12 +3,21 @@
 
 {% block content %}
 {% load static %}
+<script type="text/javascript" src="/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+
 
 <div class="container" style="padding-bottom: 30px">
-    <h2> Клиент "{{client.company_name}}"  </h2>
+    <h2> Клиент "{% if client %} {{client.company_name}} {% else %}  {{project.company.company_name}} {% endif %}"  </h2>
     <form action="" method="post">
         {% csrf_token %}
         <table>
+            {{form.media}}
             {{ form.as_p }}
         </table>
 
