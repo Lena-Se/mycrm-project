@@ -4,23 +4,14 @@
 
 
 <div class="container-fluid">
-    <p> <h1>Прокеты</h1>     <a href="{% url 'client-create' %}">Добавить</a> </p>
+    <p> <h1>Проекты</h1>
         <div style="float:right;">
-<!--            Сортировать по:-->
-            <form action="{% url 'projects' %}" method="get" id="sortClient">
-<!--                {{ filter.form.as_p }}-->
-<!--                    <input type="submit" value="Submit"/>-->
+            <form action="{% url 'projects' %}" method="get" id="sortProject">
+                 {{ filterset.form.as_p }}
+                    <input type="submit" value="Применить"/>
 
 <!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
-<!--                   -->
-<!--                   <option  value="company_name"> название по возрастанию</option>-->
-<!--                   <option value="-company_name"> название по убыванию</option>-->
-<!--                   <option value="created" > дата создания по возрастанию </option>-->
-<!--                   <option value="-created" > дата создания по убыванию </option>-->
-<!--                   <option value="updated" > дата изменения по возрастанию </option>-->
-<!--                   <option value="-updated" > дата изменения по убыванию </option>-->
-<!--                </select>-->
-<!--                <noscript><input type="submit" value="Submit"></noscript>-->
+
 
             </form>
 
@@ -28,63 +19,32 @@
 
     <br/>
 
-    {% if client_list %}
+    {% if project_list %}
     <table  class="clientinf">
         <tr>
+        <th>Название проекта</th>
         <th>Компания</th>
-        <th>Контактное лицо</th>
-        <th>Добавлено</th>
-        <th>Изменено</th>
-        <th>Адрес</th>
-        <th>Телефон</th>
-        <th>Email</th>
+        <th>Срок начала</th>
+        <th>Срок окончания</th>
+        <th>Стоимость</th>
         </tr>
 
-      {% for client in client_list %}
+      {% for project in project_list %}
       <tr>
-          <td> <a href="{{ client.get_absolute_url }}"> {{ client.company_name }}</a> </td>
-          <td>  {{client.contact_person}}</td>
-           <td>  {{client.created}}</td>
-           <td>  {{client.updated}}</td>
-           <td>  {{client.address}}</td>
-           <td rowspan="2">  <ul>
-               {% for phone in client.phone_set.all %}
-                 <li>{{phone.number}}</li>
-               {% endfor %}
-           </ul></td>
-          <td rowspan="2">
-              <ul>
-                  {% for mail in client.email_set.all %}
-                 <li>{{mail.email_address}}</li>
-               {% endfor %}
-              </ul>
-          </td>
+          <td> <a href="{{ project.get_absolute_url }}"> {{ project.name }}</a> </td>
+          <td>{% if project.company %}  {{project.company.company_name}} {% endif %}</td>
+           <td>  {{project.start_date}}</td>
+           <td>   {% if project.end_date %}{{ project.end_date }}{% else %} - {%endif%}</td>
+           <td>  {{project.price}}$</td>
       </tr>
-        <tr> <td colspan="5">{{client.description}}</td></tr>
-        <tr><td colspan="7">  </td></tr>
-
+        <tr> <td colspan="5"> {{project.description | safe }} </td></tr>
+        <tr><td colspan="5">  </td></tr>
       {% endfor %}
 
     </table>
 
-     {% if is_paginated %}
-      <div class="pagination">
-          <span class="page-links">
-              {% if page_obj.has_previous %}
-                  <a href="{% url 'clients' %}?page={{ page_obj.previous_page_number }}">пред.</a>
-              {% endif %}
-              <span class="page-current">
-                  стр. {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-              </span>
-              {% if page_obj.has_next %}
-                  <a href="{% url 'clients' %}?page={{ page_obj.next_page_number }}">след.</a>
-              {% endif %}
-          </span>
-      </div>
-  {% endif %}
-
     {% else %}
-      <p>Нет доступных клиентов для просмотра</p>
+      <p>Нет доступных проектов для просмотра</p>
     {% endif %}
 </div>
 

@@ -8,30 +8,25 @@
   <h1>Компания: {{ client.company_name }}</h1>
 
   <p><strong>Контактное лицо (руководитель):</strong> {{ client.contact_person }}</p> <!-- author detail link not yet defined -->
-  <p><strong>Описание:</strong> {{ client.description | safe | striptags| linebreaks  }}</p>
+  <p><strong>Описание:</strong> {{ client.description | safe }}</p>
   <p><strong>Адрес:</strong> {{ client.address }}</p>
   <p><strong>Телефоны:</strong>  <ul>
                {% for phone in client.phone_set.all %}
                  <li>{{phone.number}}</li>
                {% endfor %}
            </ul></p>
-  <p><strong>Email:</strong> <ul>
-                  {% for mail in client.email_set.all %}
+  <p><strong>Email:</strong>
+              <ul>
+                 {% for mail in client.email_set.all %}
                  <li>{{mail.email_address}}</li>
-
                {% endfor %}
               </ul></p>
-     <p><strong>Дата добавления:</strong> {{ client.created }}</p>
-     <p><strong>Дата редактирования:</strong> {{ client.updated }}</p>
-
-     <ul>
-
-        <li>     <a href="{% url 'client-update' client.slug %}  ">Редактировать</a> </li>
-         <li>
-           <a href="#">Удалить</a>
-         </li>
-
-    </ul>
+  <p><strong>Дата добавления:</strong> {{ client.created }}</p>
+  <p><strong>Дата редактирования:</strong> {{ client.updated }}</p>
+  <p><ul>
+        <li> <a href="{% url 'client-update' client.slug %}  ">Редактировать</a> </li>
+        <li> <a href="{% url 'client-delete' client.slug %}">Удалить</a> </li>
+    </ul></p>
 </div>
 <div class="col-4">
     <p> <h3> Проекты </h3>  <a href="{% url 'project-create' client.slug %} ">Добавить</a> </p>

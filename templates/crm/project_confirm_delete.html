@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} ITM CRM - удаление проекта {{ project.name }}  {% endblock %}
+
+{% block content %}
+
+
+<h1>Удалить проект</h1>
+
+<p>Вы уверены, что хотите удалить проект: {{ project.name }} {% if project.company %} (компания {{project.company}}){%endif%}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" action="" value="Да, удалить." />
+</form>
+
+{% endblock %}

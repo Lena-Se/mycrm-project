@@ -14,6 +14,7 @@
                 <input type="hidden" name="page" value="{{ page_obj.number }}" >
                 {% endif%}
                     <input type="submit" value="Применить">
+<!--                 <noscript><input type="submit" value="Submit"></noscript>-->
 
 
 <!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
@@ -65,11 +66,10 @@
               </ul>
           </td>
       </tr>
-        <tr> <td colspan="5">{{client.description | safe | striptags| linebreaks}}</td></tr>
+        <tr> <td colspan="5">{{client.description | safe}}</td></tr>
         <tr><td colspan="7">  </td></tr>
 
       {% endfor %}
-
     </table>
 
 <!--     {% if is_paginated %}-->

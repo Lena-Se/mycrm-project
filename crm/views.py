@@ -41,7 +41,6 @@ class ClientsListView(FilteredListView):  # (FilterView):  # (FilteredListView):
     model = Client
     paginate_by = 3
     paginate_orphans = 1
-    template_name = 'crm/client_list.html'
     filterset_class = ClientFilter
 
 
@@ -51,7 +50,7 @@ class ClientDetailView(generic.DetailView):
 
 class ClientCreateView(generic.CreateView):
     model = Client
-    fields = ['company_name', 'contact_person', 'description', 'address', 'slug']
+    fields = ['company_name', 'contact_person', 'description', 'address']  # , 'slug']
     success_url = reverse_lazy('clients')
 
     def get_context_data(self, **kwargs):
@@ -95,6 +94,7 @@ class ClientUpdateView(generic.UpdateView):
     Returns extended context.
     """
     model = Client
+    fields = ['company_name', 'contact_person', 'description', 'address']
 
     def get_context_data(self, **kwargs):
         context = super(ClientUpdateView, self).get_context_data(**kwargs)
@@ -123,29 +123,26 @@ class ClientUpdateView(generic.UpdateView):
         else:
             return super().form_invalid(form)
 
-    fields = ['company_name', 'contact_person', 'description', 'address']
-
     def get_success_url(self):
         return reverse_lazy('client-details', args=[self.object.slug])
+
+
+class ClientDeleteView(generic.DeleteView):
+    model = Client
+    success_url = reverse_lazy('clients')
+    # permission_required = 'clients.can_delete'
 
 
 class ProjectsListView(FilteredListView):
     model = Project
     paginate_by = 5
     paginate_orphans = 1
-    template_name = 'crm/project_list.html'
+    # template_name = 'crm/project_list.html'
     filterset_class = ProjectFilter
 
 
 class ProjectDetailView(generic.DetailView):
     model = Project
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProjectDetailView, self).get_context_data(**kwargs)
-    #     # Pass the filterset to the template - it provides the form.
-    #     client = get_object_or_404(Client, slug=self.kwargs['slug'])
-    #     context['client'] = client
-    #     return context
 
 
 class ProjectCreateView(generic.CreateView):
@@ -188,6 +185,10 @@ class ProjectUpdateView(generic.UpdateView):
     form_class = ProjectForm
 
     def get_success_url(self):
-        return reverse_lazy('client-details', args=[self.object.company.slug])
+        return reverse_lazy('project-details', args=[self.object.id])
 
 
+class ProjectDeleteView(generic.DeleteView):
+    model = Project
+    success_url = reverse_lazy('projects')
+    # permission_required = 'projects.can_delete'
