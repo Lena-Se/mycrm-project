@@ -1,4 +1,3 @@
-from django.conf.urls import url
 from django.urls import path, include
 from django.views.i18n import JavaScriptCatalog
 from . import views

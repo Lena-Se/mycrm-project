@@ -26,6 +26,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'crmuser.User'
+
 # Application definition
 # built-in apps
 INSTALLED_APPS = [
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
 # custom apps
 INSTALLED_APPS += [
     'crm.apps.CrmConfig',
+    'crmuser.apps.CrmuserConfig',
 ]
 # django-packages apps
 INSTALLED_APPS += [
