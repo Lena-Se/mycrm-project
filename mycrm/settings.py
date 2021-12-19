@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'crm.apps.CrmConfig',
     'crmuser.apps.CrmuserConfig',
+    'interactions.apps.InteractionsConfig',
 ]
 # django-packages apps
 INSTALLED_APPS += [

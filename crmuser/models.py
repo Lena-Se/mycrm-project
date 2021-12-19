@@ -4,8 +4,6 @@ from django.urls import reverse_lazy
 
 
 # Create your models here.
-
-
 class User(AbstractUser):
     user_photo = models.ImageField(upload_to='user_photo/', default='user_photo/default.jpg')
 

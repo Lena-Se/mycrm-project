@@ -2,14 +2,13 @@ from ckeditor.fields import RichTextField
 from django.core.validators import RegexValidator
 from django.db import models
 from .customslug import slugify
-
-from .constants import INTERACTION_CHOICES
-
-# Create your models here.
 from django.urls import reverse, reverse_lazy
 
 
 class Phone(models.Model):
+    """
+         Model representing a phone number data for client company.
+    """
     phone_validator = RegexValidator(regex=r'^(\+)?((\d{2,3}) ?\d|\d)(([ -]?\d)|( ?(\d{2,3}) ?)){5,12}\d$',
                                      message='Номер телефона в формате: "+380123456789".')
     number = models.CharField(max_length=13, verbose_name='телефон', validators=[phone_validator],
@@ -28,6 +27,9 @@ class Phone(models.Model):
 
 
 class Email(models.Model):
+    """
+         Model representing a email address data for client company.
+    """
     email_address = models.EmailField(verbose_name='email')
     client = models.ForeignKey('Client', on_delete=models.CASCADE, null=True, verbose_name='компания')
     created = models.DateTimeField(auto_now_add=True)
@@ -43,6 +45,9 @@ class Email(models.Model):
 
 
 class Client(models.Model):
+    """
+         Model representing a client company data.
+    """
     slug_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
     company_name = models.CharField(max_length=500, verbose_name='компания')
     contact_person = models.CharField(max_length=300, verbose_name='контактное лицо (ФИО)',
@@ -75,6 +80,9 @@ class Client(models.Model):
 
 
 class Project(models.Model):
+    """
+         Model representing a project data.
+    """
     name = models.CharField(max_length=500, verbose_name='Название проекта')
     description = RichTextField(blank=True, verbose_name='описание')
     start_date = models.DateField(verbose_name='дата начала')
@@ -96,36 +104,36 @@ class Project(models.Model):
         return self.name
 
 
-class Interaction(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие')
-    reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES)
-    description = RichTextField(blank=True, verbose_name='описание')
-    created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
-    updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-
-    class Meta:
-        ordering = ('project', '-created')
-        verbose_name = 'Взаимодействие'
-        verbose_name_plural = 'Взаимодействия'
-
-    def get_absolute_url(self):
-        return reverse('interaction_detail', args=[self.id])
-
-    def __str__(self):
-        return self.reference_channel + " - " + self.project.name
-
-
-class Mark(models.Model):
-    mark = models.IntegerField(default=0)
-    interaction = models.ForeignKey(Interaction, on_delete=models.CASCADE, verbose_name='взаимодействие')
-    created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
-    updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-
-    class Meta:
-        ordering = ('interaction', '-created')
-        verbose_name = 'Оценка'
-        verbose_name_plural = 'Оценки'
-
-    def __str__(self):
-        return str(self.mark)
+# class Interaction(models.Model):
+#     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие')
+#     reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES)
+#     description = RichTextField(blank=True, verbose_name='описание')
+#     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
+#     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
+#
+#     class Meta:
+#         ordering = ('project', '-created')
+#         verbose_name = 'Взаимодействие'
+#         verbose_name_plural = 'Взаимодействия'
+#
+#     def get_absolute_url(self):
+#         return reverse('interaction_detail', args=[self.id])
+#
+#     def __str__(self):
+#         return self.reference_channel + " - " + self.project.name
+#
+#
+# class Mark(models.Model):
+#     mark = models.IntegerField(default=0)
+#     interaction = models.ForeignKey(Interaction, on_delete=models.CASCADE, verbose_name='взаимодействие')
+#     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
+#     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
+#
+#     class Meta:
+#         ordering = ('interaction', '-created')
+#         verbose_name = 'Оценка'
+#         verbose_name_plural = 'Оценки'
+#
+#     def __str__(self):
+#         return str(self.mark)
 

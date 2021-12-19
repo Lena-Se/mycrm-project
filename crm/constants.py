@@ -8,10 +8,4 @@ SORT_CHOICES = [
     ["-created", "дате создания (по убыванию)"],
 ]
 
-INTERACTION_CHOICES = [
-    ('request', 'Заявка'),
-    ('mail', 'Письмо'),
-    ('site', 'Сайт'),
-    ('call', 'Звонок'),
-    ('initiative', 'Инициатива компании')
-]
+
