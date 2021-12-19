@@ -27,6 +27,8 @@ urlpatterns = [
     # url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
+
+
 # urlpatterns = [
 #     path('', views.IndexTemplateView.as_view(), name='index'),
 #     path('clients/', views.ClientsListView.as_view(), name='clients'),

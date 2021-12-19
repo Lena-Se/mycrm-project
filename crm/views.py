@@ -135,7 +135,7 @@ class ClientDeleteView(generic.DeleteView):
 
 class ProjectsListView(FilteredListView):
     model = Project
-    paginate_by = 5
+    paginate_by = 3
     paginate_orphans = 1
     # template_name = 'crm/project_list.html'
     filterset_class = ProjectFilter

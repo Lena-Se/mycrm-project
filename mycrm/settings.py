@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',]
+    'django.contrib.staticfiles',
+]
 
 # custom apps
 INSTALLED_APPS += [
@@ -48,6 +49,8 @@ INSTALLED_APPS += [
     'ckeditor',
     'django_filters',
 ]
+
+LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

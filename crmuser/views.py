@@ -13,4 +13,4 @@ class UserUpdateView(UpdateView):
     model = User
 
     def get_success_url(self):
-        return reverse_lazy('crmuser-cabinet', args=[self.name])
+        return reverse_lazy('registration-cabinet', args=[self.name])

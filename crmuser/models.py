@@ -13,4 +13,4 @@ class User(AbstractUser):
         """
         Returns the url to access a particular profile instance.
         """
-        return reverse_lazy('crmuser-cabinet', args=[self.name])
+        return reverse_lazy('registration-cabinet', args=[self.name])
