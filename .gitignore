@@ -4,6 +4,7 @@
 
 static/
 tmp
+.env
 .idea/
 
 # User-specific stuff
@@ -230,3 +231,4 @@ dmypy.json
 cython_debug/
 
 !/static/tmp
+!/.env
