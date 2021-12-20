@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
@@ -8,7 +8,7 @@ from .forms import PhoneInlineFormset, EmailInlineFormset, ProjectForm
 
 
 # Create your views here.
-class IndexTemplateView(generic.TemplateView):
+class IndexTemplateView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
@@ -45,7 +45,7 @@ class ClientsListView(FilteredListView):  # (FilterView):  # (FilteredListView):
     filterset_class = ClientFilter
 
 
-class ClientDetailView(generic.DetailView):
+class ClientDetailView(LoginRequiredMixin, generic.DetailView):
     model = Client
 
 

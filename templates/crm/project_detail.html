@@ -4,30 +4,28 @@
 {% block content %}
 <div class="container">
     <div class="row">
-<div class="col-4" >
-
-   <h1>Проект: {{ project.name }}</h1>
-  <h3> Для компании "{{ project.company.company_name }}"</h3>
-
-  <p><strong>Описание:</strong> {{ project.description  | safe }}</p>
-  <p><strong>Дата начала:</strong> {{ project.start_date }}</p>
-  <p><strong>Дата окончания:</strong> {% if project.end_date %}{{ project.end_date }}{% else %} - {%endif%}</p>
-  <p><strong>Стоимость:</strong> {{ project.price }}$</p>
-  <p>
-     <ul>
-         <li>   <a href="{% url 'project-update' project.id %}  ">Редактировать</a> </li>
-         <li>   <a href="{% url 'project-delete' project.id %}">Удалить</a>  </li>
-    </ul>
-  </p>
-</div>
-<!--<div class="col-4">-->
-<!--    <p> <h3> Проекты </h3>  <a href="# ">Добавить</a> </p>-->
-<!--    <ol>-->
-<!--         {% for project in client.project_set.all %}-->
-<!--          <li><a href="project.get_absolute_url"> {{ project.name }} </a></li>-->
-<!--        {% endfor %}-->
-<!--    </ol>-->
-<!--</div>-->
+        <div class="col-4" >
+           <h1>Проект: {{ project.name }}</h1>
+           <h3> Для компании "{{ project.company.company_name }}"</h3>
+          <p><strong>Описание:</strong> {{ project.description  | safe }}</p>
+          <p><strong>Дата начала:</strong> {{ project.start_date }}</p>
+          <p><strong>Дата окончания:</strong> {% if project.end_date %}{{ project.end_date }}{% else %} - {%endif%}</p>
+          <p><strong>Стоимость:</strong> {{ project.price }}$</p>
+          <p>
+             <ul>
+                 <li>   <a href="{% url 'project-update' project.id %}  ">Редактировать</a> </li>
+                 <li>   <a href="{% url 'project-delete' project.id %}">Удалить</a>  </li>
+            </ul>
+          </p>
     </div>
+        <div class="col-4 ms-2">
+            <p> <h3> Взаимодействия по проекту: </h3>  <a href="# ">Добавить</a> </p>
+             <ol>
+                 {% for interaction in project.interaction_set.all %}
+                 <li><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </a></li>
+                {% endfor %}
+            </ol>
+        </div>
+      </div>
 </div>
 {% endblock %}

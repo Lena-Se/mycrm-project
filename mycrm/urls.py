@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from interactions import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +25,17 @@ urlpatterns = [
 # Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
+]
+
+interactions_urlpatterns = [
+    # path('', views.InteractionsListView.as_view(), name='interactions'),
+    path('details/<int:pk>/', views.InteractionDetailView.as_view(), name='interaction-details'),
+    path('create/', views.InteractionCreateView.as_view(), name='interaction-create'),
+    path('update/<int:pk>/', views.InteractionUpdateView.as_view(), name='interaction-update'),
+    path('delete/<int:pk>/', views.InteractionDeleteView.as_view(), name='interaction-delete'),
+]
+
+# Add interactions urls
+urlpatterns += [
+    path('interactions/', include(interactions_urlpatterns)),
 ]

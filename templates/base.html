@@ -23,9 +23,18 @@
 
   {% include 'navbar.html' %}
   <div class="maindiv">
-  {% block content %}
-  {% endblock %}
+  {% if request.user.is_authenticated %}
+    {% block content %}
+    {% endblock %}
+  {% else %}
 
+      <div class="container-fluid mx-auto my-5 text-center">
+          <h2>Для просмотра информации на странице необходимо выполнить <a href="{% url 'login'%}?next={{request.path}}">авторизацию</a></h2>
+           {% block auth %}
+           {% endblock %}
+      </div>
+
+  {% endif %}
   {% block pagination %}
    {% if is_paginated %}
       <div class="pagination">

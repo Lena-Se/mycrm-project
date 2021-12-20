@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container-fluid">
 
+{% if user.is_authenticated %}
 <h1>CRM</h1>
 
 <h2>Добро пожаловать!</h2>
@@ -14,5 +15,10 @@
   <ul>
     <li><a href="{% url 'projects' %}"><strong>{{project_count}}  проектов:</strong> </a> </li>
   </ul>
+ {% else %}
+      <div class="justify-content-center">
+          <h2>Для просмотра информации на странице необходимо выполнить <a href="{% url 'login'%}?next={{request.path}}">авторизацию</a></h2>
+      </div>
+  {% endif %}
 </div>
 {% endblock %}

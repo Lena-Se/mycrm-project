@@ -14,6 +14,11 @@ class Keyword(models.Model):
     word = models.CharField(max_length=300, unique=True, help_text="Добавьте ключевое слово для взаимодействия",
                             verbose_name='ключевое слово')
 
+    class Meta:
+        ordering = ('word',)
+        verbose_name = 'Ключевое слово'
+        verbose_name_plural = 'Ключевые слова'
+
     def __str__(self):
         """
         String for representing the Model object (in Admin site etc.)
@@ -26,7 +31,7 @@ class Interaction(models.Model):
          Model representing an interaction data for project of client company.
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие')
-    reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES)
+    reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES, verbose_name='канал обращения')
     description = RichTextField(blank=True, verbose_name='описание')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
@@ -40,10 +45,10 @@ class Interaction(models.Model):
         verbose_name_plural = 'Взаимодействия'
 
     def get_absolute_url(self):
-        return reverse_lazy('interaction_detail', args=[self.id])
+        return reverse_lazy('interaction-details', args=[self.id])
 
     def __str__(self):
-        return self.reference_channel + " - " + self.project.name
+        return self.get_reference_channel_display() + " - " + self.project.name
 
 
 class Mark(models.Model):
