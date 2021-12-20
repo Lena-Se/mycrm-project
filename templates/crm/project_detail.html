@@ -18,8 +18,8 @@
             </ul>
           </p>
     </div>
-        <div class="col-4 ms-2">
-            <p> <h3> Взаимодействия по проекту: </h3>  <a href="# ">Добавить</a> </p>
+        <div class="col-4 m-2">
+            <p> <h3> Взаимодействия по проекту: </h3>  <a href="{% url 'interaction-create' project.id %} ">Добавить</a> </p>
              <ol>
                  {% for interaction in project.interaction_set.all %}
                  <li><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </a></li>

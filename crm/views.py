@@ -38,7 +38,7 @@ class FilteredListView(generic.ListView):
         return context
 
 
-class ClientsListView(FilteredListView):  # (FilterView):  # (FilteredListView):
+class ClientsListView(LoginRequiredMixin, FilteredListView):  # (FilterView):  # (FilteredListView):
     model = Client
     paginate_by = 3
     paginate_orphans = 1
@@ -53,7 +53,7 @@ class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
     model = Client
     fields = ['company_name', 'contact_person', 'description', 'address']  # , 'slug']
     success_url = reverse_lazy('clients')
-    permission_required = 'crm.can_add_client'
+    permission_required = 'crm.add_client'
 
     def get_context_data(self, **kwargs):
         context = super(ClientCreateView, self).get_context_data(**kwargs)
@@ -97,7 +97,7 @@ class ClientUpdateView(generic.UpdateView):
     """
     model = Client
     fields = ['company_name', 'contact_person', 'description', 'address']
-    permission_required = 'crm.can_change_client'
+    permission_required = 'crm.change_client'
 
     def get_context_data(self, **kwargs):
         context = super(ClientUpdateView, self).get_context_data(**kwargs)
@@ -133,18 +133,17 @@ class ClientUpdateView(generic.UpdateView):
 class ClientDeleteView(PermissionRequiredMixin, generic.DeleteView):
     model = Client
     success_url = reverse_lazy('clients')
-    permission_required = 'crm.can_delete_client'
+    permission_required = 'crm.delete_client'
 
 
-class ProjectsListView(FilteredListView):
+class ProjectsListView(LoginRequiredMixin, FilteredListView):
     model = Project
     paginate_by = 3
     paginate_orphans = 1
-    # template_name = 'crm/project_list.html'
     filterset_class = ProjectFilter
 
 
-class ProjectDetailView(generic.DetailView):
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
 
 
@@ -152,7 +151,7 @@ class ProjectCreateView(PermissionRequiredMixin, generic.CreateView):
     model = Project
     form_class = ProjectForm
     client = None
-    permission_required = 'crm.can_add_project'
+    permission_required = 'crm.add_project'
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
@@ -187,7 +186,7 @@ class ProjectUpdateView(PermissionRequiredMixin, generic.UpdateView):
     """
     model = Project
     form_class = ProjectForm
-    permission_required = 'crm.can_change_project'
+    permission_required = 'crm.change_project'
 
     def get_success_url(self):
         return reverse_lazy('project-details', args=[self.object.id])
@@ -196,4 +195,4 @@ class ProjectUpdateView(PermissionRequiredMixin, generic.UpdateView):
 class ProjectDeleteView(PermissionRequiredMixin, generic.DeleteView):
     model = Project
     success_url = reverse_lazy('projects')
-    permission_required = 'crm.can_delete_project'
+    permission_required = 'crm.delete_project'

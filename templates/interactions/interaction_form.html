@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}ITM CRM - редактирование взаимодействия {% endblock %}
 
-</body>
-</html>
+{% block content %}
+{% load static %}
+
+<div class="container" style="padding-bottom: 30px">
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form.media}}
+            {{ form.as_p }}
+        </table>
+        <input type="submit" value="Сохранить" />
+    </form>
+</div>
+{% endblock %}

@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} ITM CRM - удаление взаимодействия {{ interaction }}  {% endblock %}
 
-</body>
-</html>
+{% block content %}
+
+
+<h1>Удалить взаимодействие</h1>
+
+<p>Вы уверены, что хотите удалить взаимодействие {{ interaction }} {% if interaction.project.company %} (компания {{interaction.project.company}}){%endif%}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" action="" value="Да, удалить." />
+</form>
+
+{% endblock %}

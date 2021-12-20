@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} ITM CRM - взаимодействие {{ interaction }}  {% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="container">
+      <div class="col-4" >
+          <h1>Детали по взаимодействию {{interaction}}</h1>
+           <h3>Проект: {{ interaction.project.name }}</h3>
+           <h3> Компания: "{{ interaction.project.company.company_name }}"</h3>
+          <p><strong>Канал обращения:</strong> {{ interaction.get_reference_channel_display }}</p>
+          <p><strong>Описание:</strong> {{ interaction.description  | safe }}</p>
+
+          <p><strong>Рейтинг:</strong> {% if interaction.marks_set %} 0 {% else %} нет оценок {% endif %}</p>
+          <p>
+             <ul>
+                 <li>   <a href="{% url 'interaction-update' interaction.id %}  ">Редактировать</a> </li>
+                 <li>   <a href="{% url 'interaction-delete' interaction.id %}">Удалить</a>  </li>
+            </ul>
+          </p>
+     </div>
+
+</div>
+{% endblock %}

@@ -4,14 +4,15 @@ from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from interactions.models import Interaction
 
 
-class InteractionDetailView(DetailView):
+class InteractionDetailView(PermissionRequiredMixin, DetailView):
     model = Interaction
+    permission_required = 'interactions.view_interaction'
 
 
 class InteractionCreateView(PermissionRequiredMixin, CreateView):
     model = Interaction
     # form_class = InteractionForm
-    permission_required = 'interactions.can_add_interaction'
+    permission_required = 'interactions.add_interaction'
 
     def get_success_url(self):
         return reverse_lazy('project-details', args=[self.project.id])
@@ -28,7 +29,7 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
 
     """
     model = Interaction
-    permission_required = 'interactions.can_change_interaction'
+    permission_required = 'interactions.change_interaction'
 
     def get_success_url(self):
         return reverse_lazy('interaction-details', args=[self.object.id])
@@ -36,7 +37,7 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
 
 class InteractionDeleteView(PermissionRequiredMixin, DeleteView):
     model = Interaction
-    permission_required = 'interaction.can_delete_interaction'
+    permission_required = 'interaction.delete_interaction'
 
     def get_success_url(self):
         return reverse_lazy('project-details', args=[self.project.id])
