@@ -116,12 +116,13 @@ class ClientUpdateView(generic.UpdateView):
         formset_phone = context['phonesFormset']
         formset_email = context['emailsFormset']
         if formset_phone.is_valid() and formset_email.is_valid():
-            form.save()
-            # self.object = form.save()
+            #form.save()
+            self.object = form.save(commit=False)
             formset_phone.instance = self.object
             formset_phone.save()
             formset_email.instance = self.object
             formset_email.save()
+            self.object.save()
             return super().form_valid(form)
         else:
             return super().form_invalid(form)

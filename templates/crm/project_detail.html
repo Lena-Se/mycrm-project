@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-4" >
+        <div class="col-6 m-1 px-2" >
            <h1>Проект: {{ project.name }}</h1>
            <h3> Для компании "{{ project.company.company_name }}"</h3>
           <p><strong>Описание:</strong> {{ project.description  | safe }}</p>
@@ -18,7 +18,7 @@
             </ul>
           </p>
     </div>
-        <div class="col-4 m-2">
+        <div class="col-5 mx-5 ">
             <p> <h3> Взаимодействия по проекту: </h3>  <a href="{% url 'interaction-create' project.id %} ">Добавить</a> </p>
              <ol>
                  {% for interaction in project.interaction_set.all %}

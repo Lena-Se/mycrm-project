@@ -26,53 +26,57 @@
   {% if request.user.is_authenticated %}
     {% block content %}
     {% endblock %}
+
+    {% block pagination %}
+       {% if is_paginated %}
+          <div class="pagination">
+              <span class="page-links">
+
+                  {% if page_obj.has_previous %}
+                  <a href="?{% param_replace page=page_obj.previous_page_number %} "> пред.</a>
+
+                  {% endif %}
+                  <span class="page-current">
+                      стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                  </span>
+
+                  {% if page_obj.has_next %}
+                             <a href="?{% param_replace page=page_obj.next_page_number %}">след.</a>
+                  {% endif %}
+              </span>
+          </div>
+      {% endif %}
+    <!--  {% if is_paginated %}-->
+    <!--      <div class="pagination">-->
+    <!--          <span class="page-links">-->
+    <!--              {% if page_obj.has_previous %}-->
+    <!--                  <a href="{{ request.path}}?page={{ page_obj.previous_page_number }}">пред.</a>-->
+    <!--              {% endif %}-->
+    <!--              <span class="page-current">-->
+    <!--                  стр. {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
+    <!--              </span>-->
+    <!--              {% if page_obj.has_next %}-->
+    <!--                  <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">след.</a>-->
+    <!--              {% endif %}-->
+    <!--          </span>-->
+    <!--      </div>-->
+    <!--  {% endif %}-->
+
+    {% endblock %}
+
   {% else %}
 
       <div class="container-fluid mx-auto my-5 text-center">
-          <h2>Для просмотра информации на странице необходимо выполнить <a href="{% url 'login'%}?next={{request.path}}">авторизацию</a></h2>
+          <h2>Для просмотра информации на странице необходимо пройти <a href="{% url 'login'%}?next={{request.path}}">авторизацию</a></h2>
+          <br>
            {% block auth %}
            {% endblock %}
       </div>
 
   {% endif %}
-  {% block pagination %}
-   {% if is_paginated %}
-      <div class="pagination">
-          <span class="page-links">
-
-              {% if page_obj.has_previous %}
-              <a href="?{% param_replace page=page_obj.previous_page_number %} "> пред.</a>
-
-              {% endif %}
-              <span class="page-current">
-                  стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-              </span>
-
-              {% if page_obj.has_next %}
-                         <a href="?{% param_replace page=page_obj.next_page_number %}">след.</a>
-              {% endif %}
-          </span>
-      </div>
-  {% endif %}
-<!--  {% if is_paginated %}-->
-<!--      <div class="pagination">-->
-<!--          <span class="page-links">-->
-<!--              {% if page_obj.has_previous %}-->
-<!--                  <a href="{{ request.path}}?page={{ page_obj.previous_page_number }}">пред.</a>-->
-<!--              {% endif %}-->
-<!--              <span class="page-current">-->
-<!--                  стр. {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
-<!--              </span>-->
-<!--              {% if page_obj.has_next %}-->
-<!--                  <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">след.</a>-->
-<!--              {% endif %}-->
-<!--          </span>-->
-<!--      </div>-->
-<!--  {% endif %}-->
-
-  {% endblock %}
 
  </div>
+
   {% include 'footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

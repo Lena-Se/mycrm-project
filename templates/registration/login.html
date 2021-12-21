@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="contaiter text-center">
+  <p>Вход в систему успешно выполнен.</p>
+  <p>Добро пожаловать, {% if request.user.get_fullname %} {{ request.user.get_fullname }} {% else %} {{request.user.get_username }}.</p>
+  <br>
+  <p><a href="{% url 'crmuser-cabinet' %}"> Перейти в личный кабинет.</a></p>
+
+</div>
+
+
 {% endblock %}
  {% block auth %}
 <div class="d-flex justify-content-center mt-5 p-2">
+
 {% if form.errors %}
-  <p>Ваше имя пользователя не зарегистрировано в системе. Попробуйте еще раз.</p>
+  <p>Ваше имя пользователя/пароль не зарегистрировано в системе. Попробуйте еще раз.</p>
 {% endif %}
 
 <div class="d-flex justify-content-center mt-1">

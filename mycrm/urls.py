@@ -39,3 +39,8 @@ interactions_urlpatterns = [
 urlpatterns += [
     path('interactions/', include(interactions_urlpatterns)),
 ]
+
+# Add crmuser urls
+urlpatterns += [
+    path('crmuser/',include('crmuser.urls')),
+]

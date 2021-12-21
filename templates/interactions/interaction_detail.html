@@ -3,12 +3,13 @@
 
 {% block content %}
 <div class="container">
-      <div class="col-4" >
+      <div class="row">
           <h1>Детали по взаимодействию {{interaction}}</h1>
-           <h3>Проект: {{ interaction.project.name }}</h3>
-           <h3> Компания: "{{ interaction.project.company.company_name }}"</h3>
+           <h4>Проект: {{ interaction.project.name }}</h4>
+           <h4> Компания: "{{ interaction.project.company.company_name }}"</h4>
           <p><strong>Канал обращения:</strong> {{ interaction.get_reference_channel_display }}</p>
           <p><strong>Описание:</strong> {{ interaction.description  | safe }}</p>
+          <p><strong>Менеджер:</strong> {{ interaction.user.name }} {{ interaction.user.name }}</p>
 
           <p><strong>Рейтинг:</strong> {% if interaction.marks_set %} 0 {% else %} нет оценок {% endif %}</p>
           <p>
@@ -17,6 +18,7 @@
                  <li>   <a href="{% url 'interaction-delete' interaction.id %}">Удалить</a>  </li>
             </ul>
           </p>
+
      </div>
 
 </div>
