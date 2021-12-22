@@ -9,7 +9,7 @@
            <h4> Компания: "{{ interaction.project.company.company_name }}"</h4>
           <p><strong>Канал обращения:</strong> {{ interaction.get_reference_channel_display }}</p>
           <p><strong>Описание:</strong> {{ interaction.description  | safe }}</p>
-          <p><strong>Менеджер:</strong> {{ interaction.user.get_user_naming }}</p>
+          <p><strong>Менеджер:</strong> {{ interaction.manager.get_user_naming }}</p>
 
           <p><strong>Рейтинг:</strong> {% if interaction.rating %} {{interaction.rating}} {% else %} нет оценок {% endif %}</p>
           <br>
@@ -19,7 +19,7 @@
               {% endfor%}
           </div>
 
-          {% if interaction.user == request.user %}
+          {% if interaction.manager == request.user %}
           <p>
              <ul>
                  <li>   <a href="{% url 'interaction-update' interaction.id %}  ">Редактировать</a> </li>

@@ -26,7 +26,7 @@
              <ol>
                  {% for interaction in project.interaction_set.all %}
                  <li><p></p><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </p></a>
-                 <p>Менеджер: {{ interaction.user.get_user_naming }}</p>
+                 <p>Менеджер: {{ interaction.manager.get_user_naming }}</p>
                      <p>{{ interaction.description | safe }}</p>
                  </li>
                 {% endfor %}

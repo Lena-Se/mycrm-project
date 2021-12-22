@@ -33,7 +33,7 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
     model = Interaction
     # form_class = InteractionForm
     permission_required = 'interactions.add_interaction'
-    fields = ['reference_channel', 'description']
+    fields = ['reference_channel', 'description', 'keyword']
     project = None
 
     def get_context_data(self, **kwargs):
@@ -42,6 +42,7 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
         print(self.project)
         context['project'] = self.project
         context['client'] = self.project.company
+        context['manager'] = self.request.user
         return context
 
     def post(self, request, *args, **kwargs):
@@ -71,7 +72,7 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
     """
     model = Interaction
     permission_required = 'interactions.change_interaction'
-    fields = ['reference_channel', 'description']
+    fields = ['reference_channel', 'description', 'keyword']
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
