@@ -23,13 +23,15 @@
               </ul></p>
   <p><strong>Дата добавления:</strong> {{ client.created }}</p>
   <p><strong>Дата редактирования:</strong> {{ client.updated }}</p>
+    {% if request.user.get_manager_access %}
   <p><ul>
         <li> <a href="{% url 'client-update' client.slug %}  ">Редактировать</a> </li>
         <li> <a href="{% url 'client-delete' client.slug %}">Удалить</a> </li>
     </ul></p>
+    {% endif %}
 </div>
 <div class="col-4">
-    <p> <h3> Проекты </h3>  <a href="{% url 'project-create' client.slug %} ">Добавить</a> </p>
+    <p> <h3> Проекты </h3> {% if request.user.get_manager_access %} <a href="{% url 'project-create' client.slug %} ">Добавить</a> {% endif %}</p>
     <ol>
          {% for project in client.project_set.all %}
           <li><a href="{{ project.get_absolute_url }}"> {{ project.name }} </a></li>

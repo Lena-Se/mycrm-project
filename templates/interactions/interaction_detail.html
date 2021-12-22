@@ -9,15 +9,30 @@
            <h4> Компания: "{{ interaction.project.company.company_name }}"</h4>
           <p><strong>Канал обращения:</strong> {{ interaction.get_reference_channel_display }}</p>
           <p><strong>Описание:</strong> {{ interaction.description  | safe }}</p>
-          <p><strong>Менеджер:</strong> {{ interaction.user.name }} {{ interaction.user.name }}</p>
+          <p><strong>Менеджер:</strong> {{ interaction.user.get_user_naming }}</p>
 
-          <p><strong>Рейтинг:</strong> {% if interaction.marks_set %} 0 {% else %} нет оценок {% endif %}</p>
+          <p><strong>Рейтинг:</strong> {% if interaction.rating %} {{interaction.rating}} {% else %} нет оценок {% endif %}</p>
+          <br>
+          <div>
+              {% for i in mark_list %}
+              <a href="{% url 'add-mark' interaction.id %}?mark={{i}} ">{{i}}</a>&nbsp;
+              {% endfor%}
+          </div>
+
+          {% if interaction.user == request.user %}
           <p>
              <ul>
                  <li>   <a href="{% url 'interaction-update' interaction.id %}  ">Редактировать</a> </li>
                  <li>   <a href="{% url 'interaction-delete' interaction.id %}">Удалить</a>  </li>
             </ul>
           </p>
+          {% endif %}
+          <br><br>
+          <div>
+              <h6>Ключевые слова:</h6>
+              <p> {% for keyword in interaction.keyword.all %} {{keyword}} &nbsp {% endfor %} </p>
+
+          </div>
 
      </div>
 

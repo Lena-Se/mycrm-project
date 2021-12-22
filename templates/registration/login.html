@@ -3,7 +3,7 @@
 {% block content %}
 <div class="contaiter text-center">
   <p>Вход в систему успешно выполнен.</p>
-  <p>Добро пожаловать, {% if request.user.get_fullname %} {{ request.user.get_fullname }} {% else %} {{request.user.get_username }}.</p>
+  <p>Добро пожаловать, {{ request.user.get_user_naming }}.</p>
   <br>
   <p><a href="{% url 'crmuser-cabinet' %}"> Перейти в личный кабинет.</a></p>
 

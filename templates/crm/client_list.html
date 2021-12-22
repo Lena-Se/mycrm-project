@@ -5,7 +5,7 @@
 
 
 <div class="container-fluid">
-    <p> <h1>Клиенты</h1>     <a href="{% url 'client-create' %}">Добавить</a> </p>
+    <p> <h1>Клиенты</h1>   {% if request.user.get_manager_access %}  <a href="{% url 'client-create' %}">Добавить</a> {% endif %}</p>
         <div style="float:right;">
 <!--            Сортировать по:-->
             <form action="{% url 'clients' %}" method="get" id="sortClient">

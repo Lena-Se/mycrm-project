@@ -3,7 +3,8 @@ from ckeditor.fields import RichTextField
 from django.urls import reverse_lazy
 
 from crm.models import Project
-from crmuser.models import User
+# from crmuser.models import User
+from mycrm import settings
 from .constants import INTERACTION_CHOICES
 
 
@@ -35,9 +36,11 @@ class Interaction(models.Model):
     description = RichTextField(blank=True, verbose_name='описание')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-    manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='менеджер')
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='менеджер')
     keyword = models.ManyToManyField(Keyword, help_text="Выберите ключевые слова для взаимодействия",
                                      verbose_name='Ключевые слова')
+    rating = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='рейтинг', null=True, blank=True,
+                                 editable=False)
 
     class Meta:
         ordering = ('project', '-created')
@@ -59,7 +62,7 @@ class Mark(models.Model):
     interaction = models.ForeignKey(Interaction, on_delete=models.CASCADE, verbose_name='взаимодействие')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-    manager = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='менеджер')
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='менеджер')
 
     class Meta:
         ordering = ('interaction', 'rate', '-created')

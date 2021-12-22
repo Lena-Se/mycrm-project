@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
 <h1>CRM</h1>
 
-<h2>Добро пожаловать!</h2>
+<h2>Добро пожаловать, {{ request.user.get_user_naming }}!</h2>
 
   <p>ITM CRM содержит: </p>
   <ul>

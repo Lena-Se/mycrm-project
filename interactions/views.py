@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, RedirectView
 
 from crm.models import Project
 from interactions.models import Interaction
@@ -10,6 +10,23 @@ from interactions.models import Interaction
 class InteractionDetailView(PermissionRequiredMixin, DetailView):
     model = Interaction
     permission_required = 'interactions.view_interaction'
+
+    def get_context_data(self, **kwargs):
+        context = super(InteractionDetailView, self).get_context_data(**kwargs)
+
+        mark_list = [i for i in range(-5, 6)]
+        context['mark_list'] = mark_list
+        return context
+
+
+class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
+    pattern_name = 'interaction-details'
+    permission_required = 'interactions.add_mark'
+
+    def get_redirect_url(self, *args, **kwargs):
+        interaction = get_object_or_404(Interaction, pk=kwargs['pk'])
+        # interaction.mark_set.add()
+        return super().get_redirect_url(*args, **kwargs)
 
 
 class InteractionCreateView(PermissionRequiredMixin, CreateView):
