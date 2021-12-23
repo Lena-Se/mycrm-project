@@ -7,7 +7,7 @@
    <h2> Добро пожаловать, {{ user.get_user_naming }}!</h2>
     <br>
     <p> Пользователь: {{ user.get_username }}</p>
-    <img src="{{ user.user_photo.url}}" height=300 width=300 class="img-fluid">
+    <img src="{{ user.user_photo.url }}" height=300 width=300 class="img-fluid">
     <br>
     <br>
     <p> Имя: {{ user.first_name }}</p>
@@ -18,8 +18,20 @@
     <br>
     <ul>
      <li><a href="{% url 'crmuser-edit' %}"> Редактировать </a></li>
-      <li><a href="#"> Изменить пароль </a></li>
+      <li><a href="{% url 'password_change' %}"> Изменить пароль </a></li>
     </ul>
+
+  </div>
+ <p> <h3> Ваши взаимодействия по проектам:</h3></p>
+             <ol>
+                 {% for interaction in interactions %}
+                 <li><p></p><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </p></a>
+                  <p>{{ interaction.description | safe }}</p>
+                 </li>
+                {% endfor %}
+            </ol>
+
+      </div>
 
 </main>
 {% endblock %}

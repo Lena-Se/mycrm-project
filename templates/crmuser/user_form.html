@@ -3,6 +3,7 @@
 
 {% block content %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 <div class="container" style="padding-bottom: 30px">
 
@@ -10,7 +11,7 @@
         {% csrf_token %}
         <table>
             {{ form.media}}
-            {{ form.as_p }}
+            {{ form.as_p}}
         </table>
         <input type="submit" value="Сохранить" />
     </form>

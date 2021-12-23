@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, RedirectView
 
 from crm.models import Project
+from interactions.forms import InteractionForm
 from interactions.models import Interaction
 
 
@@ -31,9 +32,9 @@ class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
 
 class InteractionCreateView(PermissionRequiredMixin, CreateView):
     model = Interaction
-    # form_class = InteractionForm
+    form_class = InteractionForm
     permission_required = 'interactions.add_interaction'
-    fields = ['reference_channel', 'description', 'keyword']
+    # fields = ['reference_channel', 'description', 'keyword']
     project = None
 
     def get_context_data(self, **kwargs):
@@ -71,8 +72,9 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
 
     """
     model = Interaction
+    form_class = InteractionForm
     permission_required = 'interactions.change_interaction'
-    fields = ['reference_channel', 'description', 'keyword']
+    # fields = ['reference_channel', 'description', 'keyword']
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
