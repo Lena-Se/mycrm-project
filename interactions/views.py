@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, RedirectView
 
 from crm.models import Project
 from interactions.forms import InteractionForm
-from interactions.models import Interaction
+from interactions.models import Interaction, Mark
 
 
 class InteractionDetailView(PermissionRequiredMixin, DetailView):
@@ -23,10 +24,26 @@ class InteractionDetailView(PermissionRequiredMixin, DetailView):
 class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
     pattern_name = 'interaction-details'
     permission_required = 'interactions.add_mark'
+    queryset = Interaction.objects.all().prefetch_related('Mark').prefetch_related('Project').prefetch_related('Manager')
 
     def get_redirect_url(self, *args, **kwargs):
         interaction = get_object_or_404(Interaction, pk=kwargs['pk'])
-        # interaction.mark_set.add()
+        rate = self.request.GET.get('mark', 0)
+        # mark = Mark.objects.get(interaction=interaction)
+        mark, created = Mark.objects.get_or_create(
+            interaction=interaction,
+            manager=self.request.user,
+            defaults={'rate': rate},
+        )
+        if not created:
+            mark.rate = rate
+        # mark = Mark(rate=rate, interaction=interaction, manager=self.request.user)
+        print('Mark created=', created)
+        mark.save()
+        avg = Mark.objects.filter(interaction=interaction).aggregate(rate_avg=Avg('rate'))['rate_avg']
+        print(avg)
+        interaction.rating = avg
+        interaction.save()
         return super().get_redirect_url(*args, **kwargs)
 
 

@@ -70,6 +70,6 @@ class Mark(models.Model):
         verbose_name_plural = 'Оценки'
 
     def __str__(self):
-        return str(self.mark)
+        return str(self.rate)
 
 

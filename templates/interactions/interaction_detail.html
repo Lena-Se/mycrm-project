@@ -14,6 +14,7 @@
           <p><strong>Рейтинг:</strong> {% if interaction.rating %} {{interaction.rating}} {% else %} нет оценок {% endif %}</p>
           <br>
           <div>
+              <p>Оценить:</p>
               {% for i in mark_list %}
               <a href="{% url 'add-mark' interaction.id %}?mark={{i}} ">{{i}}</a>&nbsp;
               {% endfor%}
