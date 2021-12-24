@@ -5,8 +5,18 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, RedirectView
 
 from crm.models import Project
+from crm.views import FilteredListView
+from interactions.filters import InteractionFilter
 from interactions.forms import InteractionForm
 from interactions.models import Interaction, Mark
+
+
+class InteractionsListView(PermissionRequiredMixin, FilteredListView):
+    model = Interaction
+    paginate_by = 10
+    paginate_orphans = 1
+    filterset_class = InteractionFilter
+    permission_required = 'interactions.view_interaction'
 
 
 class InteractionDetailView(PermissionRequiredMixin, DetailView):

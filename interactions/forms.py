@@ -3,6 +3,8 @@ from django.forms.models import inlineformset_factory, ModelForm, ModelMultipleC
 
 from interactions.models import Keyword, Interaction
 
+# KeywordInlineFormset = inlineformset_factory(Interaction, Keyword, fields=['word'], extra=2)
+
 
 class InteractionForm(ModelForm):
     keyword = ModelMultipleChoiceField(queryset=Keyword.objects.all(),

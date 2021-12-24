@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %} ITM CRM - взаимодействия {% endblock %}
+{% block content %}
+
+
+<div class="container-fluid">
+    <p> <h1>Взаимодействия</h1>
+        <div style="float:right;">
+            <form action="{% url 'interactions' %}" method="get" id="sortInteraction">
+                 {{ filterset.form.as_table }}
+                    <input type="submit" value="Применить"/>
+
+<!--                <select style="float:right;" form="sortClient" name="order_by" onchange='this.form.submit()'>-->
+
+
+            </form>
+
+        </div>
+
+    <br/>
+
+    {% if interaction_list %}
+    <table  class="clientinf">
+        <tr>
+        <th>Взаимодействие</th>
+        <th>Проект</th>
+        <th>Компания</th>
+        <th>Менеджер</th>
+        <th>Канал обращения</th>
+        <th>Рейтинг</th>
+        </tr>
+
+      {% for interaction in interaction_list %}
+      <tr>
+          <td> <a href="{{ interaction.get_absolute_url }}"> {{ interaction }}</a> </td>
+          <td>{% if interaction.project %}  {{interaction.project.name}} {% endif %}</td>
+           <td>{% if interaction.project.company %}  {{interaction.project.company.company_name }} {% endif %}</td>
+           <td> {% if interaction.manager %}{{ interaction.manager.get_user_naming }}{%endif%}</td>
+           <td>  {{interaction.get_reference_channel_display}}</td>
+          <td>  {% if interaction.rating %} {{interaction.rating}} {% else %} нет оценок {% endif %} </td>
+      </tr>
+        <tr> <td colspan="6"> {{interaction.description | safe }} </td></tr>
+        <tr><td colspan="6">  </td></tr>
+      {% endfor %}
+
+    </table>
+
+    {% else %}
+      <p>Нет доступных взаимодействий для просмотра</p>
+    {% endif %}
+</div>
+
+{% endblock %}

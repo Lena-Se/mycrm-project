@@ -1,4 +1,4 @@
-from importlib._common import _
+#from importlib._common import _
 
 from django.core.exceptions import ValidationError
 from django.forms import DateTimeField, SelectDateWidget
@@ -37,6 +37,6 @@ class ProjectForm(ModelForm):
 
         # Проверка того, что дата не выходит за "нижнюю" границу (не в прошлом).
         if end_data and start_data and end_data <= start_data:
-            raise ValidationError(_('Некорректная дата окончанчания проекта! Дата должна быть позже даты начала!'))
+            raise ValidationError(self, message='Некорректная дата окончанчания проекта! Дата должна быть позже даты начала!')
 
         return end_data

@@ -30,7 +30,7 @@ urlpatterns += [
 ]
 
 interactions_urlpatterns = [
-    # path('', views.InteractionsListView.as_view(), name='interactions'),
+    path('', views.InteractionsListView.as_view(), name='interactions'),
     path('details/<int:pk>/', views.InteractionDetailView.as_view(), name='interaction-details'),
     path('create/<int:project_id>', views.InteractionCreateView.as_view(), name='interaction-create'),
     path('update/<int:pk>/', views.InteractionUpdateView.as_view(), name='interaction-update'),
