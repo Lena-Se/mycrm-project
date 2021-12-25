@@ -1,4 +1,5 @@
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.forms import formset_factory
 from django.forms.models import inlineformset_factory, ModelForm, ModelMultipleChoiceField
 
 from interactions.models import Keyword, Interaction
@@ -6,9 +7,18 @@ from interactions.models import Keyword, Interaction
 # KeywordInlineFormset = inlineformset_factory(Interaction, Keyword, fields=['word'], extra=2)
 
 
+class KeywordForm(ModelForm):
+    class Meta:
+        model = Keyword
+        fields = ['word']
+
+
+KeywordFormSet = formset_factory(KeywordForm, extra=2, )
+
+
 class InteractionForm(ModelForm):
     keyword = ModelMultipleChoiceField(queryset=Keyword.objects.all(),
-                                       widget=FilteredSelectMultiple('Keywords', False), required=False)
+                                       widget=FilteredSelectMultiple('Ключевые слова', False), required=False)
 
     class Meta:
         model = Interaction

@@ -2,17 +2,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse_lazy
 
-
 # Create your models here.
-from crmuser.hashupload import OverwriteStorage, hash_upload_to
+from crmuser.hashupload import OverwriteStorage, upload_func
 
 
 class User(AbstractUser):
     """
-    Class for model of crm user, extands standdart django User with user_photo field
+    Class for model of crm user, extands standart django User with user_photo field
     """
-    user_photo = models.ImageField(upload_to=lambda inst, fn: hash_upload_to(inst, fn, 'user_photo'),
-                                   storage=OverwriteStorage(),  default='user_photo/default.jpg')
+
+    user_photo = models.ImageField(upload_to=upload_func,  storage=OverwriteStorage(),
+                                   default='user_photo/default.jpg')
+
     # models.ImageField(upload_to='user_photo/', default='user_photo/default.jpg')
 
     def get_manager_access(self):

@@ -7,13 +7,13 @@ from django.views.generic import DetailView, CreateView, UpdateView, DeleteView,
 from crm.models import Project
 from crm.views import FilteredListView
 from interactions.filters import InteractionFilter
-from interactions.forms import InteractionForm
+from interactions.forms import InteractionForm, KeywordFormSet
 from interactions.models import Interaction, Mark
 
 
 class InteractionsListView(PermissionRequiredMixin, FilteredListView):
     model = Interaction
-    paginate_by = 10
+    paginate_by = 5
     paginate_orphans = 1
     filterset_class = InteractionFilter
     permission_required = 'interactions.view_interaction'
@@ -71,6 +71,11 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
         context['project'] = self.project
         context['client'] = self.project.company
         context['manager'] = self.request.user
+        # if self.request.POST:
+        #     context['keyword_formset'] = KeywordFormSet(self.request.POST)
+        #     context['keyword_formset'].full_clean()
+        # else:
+        #     context['keyword_formset'] = KeywordFormSet(self.request.POST)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -78,14 +83,22 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
         return super().post(request, *args, kwargs)
 
     def form_valid(self, form):
+        # context = self.get_context_data(form=form)
+        # formset_keyword = context['keyword_formset']
+        # if formset_keyword.is_valid():
         self.object = form.save(commit=False)
+        #     for obj in formset_keyword:
+        #         keyword = obj.save()
+        #         self.object.keyword.add(keyword)
         self.object.project = self.project
         self.object.manager = self.request.user
         self.object.save()
+        # else:
+        #     return super().form_invalid(form)
         return super(InteractionCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('project-details', args=[self.project.id])
+        return reverse_lazy('project-details', args=[self.project.pk])
 
 
 class InteractionUpdateView(PermissionRequiredMixin, UpdateView):

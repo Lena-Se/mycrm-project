@@ -48,16 +48,16 @@ class Client(models.Model):
     """
          Model representing a client company data.
     """
-    slug_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
-    company_name = models.CharField(max_length=500, verbose_name='компания')
+    # slug_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
+    company_name = models.CharField(max_length=500, verbose_name='компания', db_index=True)
     contact_person = models.CharField(max_length=300, verbose_name='контактное лицо (ФИО)',
                                       help_text='ФИО контактного лица / руководителя')
     description = RichTextField(blank=True, verbose_name='описание')
     # models.TextField(blank=True, verbose_name='описание')
-    created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
-    updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='создан', db_index=True)
+    updated = models.DateTimeField(auto_now=True, verbose_name='изменен', db_index=True)
     address = models.CharField(max_length=500, blank=True, verbose_name='адрес')
-    slug = models.SlugField(max_length=250, unique=True, validators=[slug_validator], db_index=True)
+    slug = models.SlugField(max_length=250, unique=True, db_index=True)  # validators=[slug_validator]
 
     class Meta:
         ordering = ('company_name', 'created', 'updated')
@@ -83,12 +83,12 @@ class Project(models.Model):
     """
          Model representing a project data.
     """
-    name = models.CharField(max_length=500, verbose_name='Название проекта')
+    name = models.CharField(max_length=500, verbose_name='Название проекта', db_index=True)
     description = RichTextField(blank=True, verbose_name='описание')
-    start_date = models.DateField(verbose_name='дата начала')
-    end_date = models.DateField(blank=True, verbose_name='дата окончания', null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    company = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, verbose_name='компания')
+    start_date = models.DateField(verbose_name='дата начала', db_index=True)
+    end_date = models.DateField(blank=True, verbose_name='дата окончания', null=True, db_index=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
+    company = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, verbose_name='компания', db_index=True)
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
 
@@ -98,42 +98,9 @@ class Project(models.Model):
         verbose_name_plural = 'Проекты'
 
     def get_absolute_url(self):
-        return reverse('project-details', args=[str(self.id)])
+        return reverse('project-details', args=[str(self.pk)])
 
     def __str__(self):
         return self.name
 
-
-# class Interaction(models.Model):
-#     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие')
-#     reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES)
-#     description = RichTextField(blank=True, verbose_name='описание')
-#     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
-#     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-#
-#     class Meta:
-#         ordering = ('project', '-created')
-#         verbose_name = 'Взаимодействие'
-#         verbose_name_plural = 'Взаимодействия'
-#
-#     def get_absolute_url(self):
-#         return reverse('interaction_detail', args=[self.id])
-#
-#     def __str__(self):
-#         return self.reference_channel + " - " + self.project.name
-#
-#
-# class Mark(models.Model):
-#     mark = models.IntegerField(default=0)
-#     interaction = models.ForeignKey(Interaction, on_delete=models.CASCADE, verbose_name='взаимодействие')
-#     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
-#     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
-#
-#     class Meta:
-#         ordering = ('interaction', '-created')
-#         verbose_name = 'Оценка'
-#         verbose_name_plural = 'Оценки'
-#
-#     def __str__(self):
-#         return str(self.mark)
 

@@ -18,8 +18,8 @@ class ClientFilter(django_filters.FilterSet):
 
 
 class ProjectFilter(django_filters.FilterSet):
-    company__company_name = django_filters.CharFilter(lookup_expr='iexact', label='Компания')
-    name = django_filters.CharFilter(lookup_expr='istartswith', label='Проект')
+    company__company_name = django_filters.ModelChoiceFilter(queryset=Client.objects.all(), label='Компания')
+    name = django_filters.ModelChoiceFilter(queryset=Project.objects.all(), label='Проект')
     ordering = django_filters.OrderingFilter(empty_label=None,
                                              fields=(
                                                  ('company', 'компания'),

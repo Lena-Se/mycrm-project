@@ -22,6 +22,10 @@ def hash_upload_to(instance, filename, fieldname):
     )
 
 
+def upload_func(inst, filename):
+    return hash_upload_to(inst, filename, 'user_photo')
+
+
 class OverwriteStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
         if self.exists(name):
