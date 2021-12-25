@@ -4,8 +4,6 @@ from django.forms.models import inlineformset_factory, ModelForm, ModelMultipleC
 
 from interactions.models import Keyword, Interaction
 
-# KeywordInlineFormset = inlineformset_factory(Interaction, Keyword, fields=['word'], extra=2)
-
 
 class KeywordForm(ModelForm):
     class Meta:
@@ -13,7 +11,9 @@ class KeywordForm(ModelForm):
         fields = ['word']
 
 
-KeywordFormSet = formset_factory(KeywordForm, extra=2, )
+KeywordFormSet = formset_factory(KeywordForm, extra=3, can_delete=True)
+
+# KeywordInlineFormset = inlineformset_factory(Interaction, Keyword, fields=['word'], extra=2)
 
 
 class InteractionForm(ModelForm):

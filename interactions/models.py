@@ -1,18 +1,20 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
 from django.db import models
 from ckeditor.fields import RichTextField
 from django.urls import reverse_lazy
 
 from crm.models import Project
-from .constants import INTERACTION_CHOICES
+from .constants import InteractionChoices
 
 
 class Keyword(models.Model):
     """
       Model representing a keywords for interaction filtering.
     """
+    word_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
     word = models.CharField(max_length=300, unique=True, help_text="Добавьте ключевое слово для взаимодействия",
-                            verbose_name='ключевое слово', blank=True, db_index=True)
+                            verbose_name='ключевое слово', blank=True, db_index=True, validators=[word_validator])
 
     class Meta:
         ordering = ('word',)
@@ -31,8 +33,8 @@ class Interaction(models.Model):
          Model representing an interaction data for project of client company.
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие', db_index=True)
-    reference_channel = models.CharField(max_length=25, choices=INTERACTION_CHOICES, verbose_name='канал обращения',
-                                         db_index=True)
+    reference_channel = models.CharField(max_length=25, choices=InteractionChoices.choices,
+                                         verbose_name='канал обращения', db_index=True)
     description = RichTextField(blank=True, verbose_name='описание')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')

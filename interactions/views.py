@@ -67,32 +67,35 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(InteractionCreateView, self).get_context_data(**kwargs)
         self.project = get_object_or_404(Project, id=self.kwargs['project_id'])
-        print(self.project)
+        print('project=', self.project)
         context['project'] = self.project
         context['client'] = self.project.company
         context['manager'] = self.request.user
-        # if self.request.POST:
-        #     context['keyword_formset'] = KeywordFormSet(self.request.POST)
-        #     context['keyword_formset'].full_clean()
-        # else:
-        #     context['keyword_formset'] = KeywordFormSet(self.request.POST)
+        if self.request.POST:
+            context['keyword_formset'] = KeywordFormSet(self.request.POST)
+            context['keyword_formset'].full_clean()
+        else:
+            context['keyword_formset'] = KeywordFormSet()  # KeywordInlineFormset()  #
         return context
 
-    def post(self, request, *args, **kwargs):
-        self.project = get_object_or_404(Project, id=self.kwargs['project_id'])
-        return super().post(request, *args, kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     self.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+    #     return super().post(request, *args, kwargs)
 
     def form_valid(self, form):
-        # context = self.get_context_data(form=form)
-        # formset_keyword = context['keyword_formset']
-        # if formset_keyword.is_valid():
+        context = self.get_context_data(form=form)
+        formset_keyword = context['keyword_formset']
         self.object = form.save(commit=False)
-        #     for obj in formset_keyword:
-        #         keyword = obj.save()
-        #         self.object.keyword.add(keyword)
-        self.object.project = self.project
+        self.object.project = context['project']    # self.project
         self.object.manager = self.request.user
         self.object.save()
+        if formset_keyword.is_valid():
+            for obj in formset_keyword:
+                if obj.is_valid():
+                    keyword = obj.save()
+                    self.object.keyword.add(keyword)
+
+
         # else:
         #     return super().form_invalid(form)
         return super(InteractionCreateView, self).form_valid(form)
@@ -116,6 +119,11 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'interactions.change_interaction'
     # fields = ['reference_channel', 'description', 'keyword']
 
+    # if self.request.POST:
+    #     context['actor_form'] = ActorFormSet(self.request.POST, instance=self.object, prefix='actor')
+    # else:
+    #     context['actor_form'] = ActorFormSet(instance=self.object, prefix='actor')
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.manager = self.request.user
@@ -131,4 +139,4 @@ class InteractionDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'interaction.delete_interaction'
 
     def get_success_url(self):
-        return reverse_lazy('project-details', args=[self.project.id])
+        return reverse_lazy('project-details', args=[self.object.project.id])
