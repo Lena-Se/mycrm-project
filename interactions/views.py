@@ -1,9 +1,11 @@
+"""
+This module contains class-based views for interactions application representing
+"""
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, RedirectView
-
 from crm.models import Project
 from crm.views import FilteredListView
 from interactions.filters import InteractionFilter
@@ -12,34 +14,48 @@ from interactions.models import Interaction, Mark, Keyword
 
 
 class InteractionsListView(PermissionRequiredMixin, FilteredListView):
-    model = Interaction
-    paginate_by = 5
-    paginate_orphans = 1
-    filterset_class = InteractionFilter
-    permission_required = 'interactions.view_interaction'
+    """
+    Class representing interactions objects list view
+    """
+    model = Interaction  # object model class
+    paginate_by = 5  # count of objects on page
+    paginate_orphans = 1  # min objects on page
+    filterset_class = InteractionFilter  # class with set of filters for interaction model
+    permission_required = 'interactions.view_interaction'  # (str) permission to see the page
 
 
 class InteractionDetailView(PermissionRequiredMixin, DetailView):
-    model = Interaction
-    permission_required = 'interactions.view_interaction'
+    """
+    Class for view details of interaction
+    """
+    model = Interaction  # object model class
+    permission_required = 'interactions.view_interaction'  # (str) permission to see the page
 
     def get_context_data(self, **kwargs):
+        """
+        Returns context extended with list of available marks
+        """
         context = super(InteractionDetailView, self).get_context_data(**kwargs)
-
         mark_list = [i for i in range(-5, 6)]
         context['mark_list'] = mark_list
         return context
 
 
 class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
-    pattern_name = 'interaction-details'
-    permission_required = 'interactions.add_mark'
-    queryset = Interaction.objects.all().prefetch_related('Mark').prefetch_related('Project')
+    """
+    Class for redirect after saving mark data
+    """
+    pattern_name = 'interaction-details'  # name of url pattern for redirect
+    permission_required = 'interactions.add_mark'  # (str) permission to see the page
+    queryset = Interaction.objects.all().prefetch_related('Mark').prefetch_related('Project')  # set of interactions
 
     def get_redirect_url(self, *args, **kwargs):
+        """
+        Apply mark data from kwargs (save Mark object and update interaction's rating).
+        Returns redirect to pattern_name with args
+        """
         interaction = get_object_or_404(Interaction, pk=kwargs['pk'])
         rate = self.request.GET.get('mark', 0)
-        # mark = Mark.objects.get(interaction=interaction)
         mark, created = Mark.objects.get_or_create(
             interaction=interaction,
             manager=self.request.user,
@@ -47,23 +63,26 @@ class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
         )
         if not created:
             mark.rate = rate
-        # mark = Mark(rate=rate, interaction=interaction, manager=self.request.user)
-        print('Mark created=', created)
         mark.save()
         avg = Mark.objects.filter(interaction=interaction).aggregate(rate_avg=Avg('rate'))['rate_avg']
-        print(avg)
         interaction.rating = avg
         interaction.save()
         return super().get_redirect_url(*args, **kwargs)
 
 
 class InteractionCreateView(PermissionRequiredMixin, CreateView):
-    model = Interaction
-    form_class = InteractionForm
-    permission_required = 'interactions.add_interaction'
-    project = None
+    """
+    Class for creating Interaction object view
+    """
+    model = Interaction  # object model class
+    form_class = InteractionForm  # form-class for interaction creating
+    permission_required = 'interactions.add_interaction'  # (str) permission to see the page
+    project = None  # project for interaction (related object)
 
     def get_context_data(self, **kwargs):
+        """
+        Extends context with related data and formset for keywords add
+        """
         context = super(InteractionCreateView, self).get_context_data(**kwargs)
         self.project = get_object_or_404(Project, pk=self.kwargs['project_pk'])
         print('project=', self.project)
@@ -74,10 +93,13 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
             context['keyword_formset'] = KeywordFormSet(self.request.POST)
             context['keyword_formset'].full_clean()
         else:
-            context['keyword_formset'] = KeywordFormSet()  # KeywordInlineFormset()  #
+            context['keyword_formset'] = KeywordFormSet()
         return context
 
     def form_valid(self, form):
+        """
+        saving creation form data and keywords from formsets
+        """
         context = self.get_context_data(form=form)
         formset_keyword = context['keyword_formset']
         self.object = form.save(commit=False)
@@ -96,6 +118,9 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
         return super(InteractionCreateView, self).form_valid(form)
 
     def get_success_url(self):
+        """
+        Returns url for redirect on successful create object
+        """
         return reverse_lazy('interaction-details', args=[self.object.pk])
 
 
@@ -103,18 +128,15 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
     """
     Class representing ViewForm for editing data of Interaction model object.
     Based on generic.UpdateView
-    attributes:
-    model - model-class representing object's data
-    form_class - form-based class with set of fields to display on form for editing object data
-
-    methods:
-
-    """
-    model = Interaction
-    form_class = InteractionForm
-    permission_required = 'interactions.change_interaction'
+   """
+    model = Interaction  # object model class
+    form_class = InteractionForm  # form-class for interaction updating
+    permission_required = 'interactions.change_interaction'  # (str) permission to see the page
 
     def get_context_data(self, **kwargs):
+        """
+        Extends context with formsets for keywords add
+        """
         context = super(InteractionUpdateView, self).get_context_data(**kwargs)
         if self.request.POST:
             context['keyword_formset'] = KeywordFormSet(self.request.POST)
@@ -124,6 +146,9 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
+        """
+        saving update form data and keywords from formsets
+        """
         context = self.get_context_data(form=form)
         formset_keyword = context['keyword_formset']
         self.object = form.save()
@@ -134,18 +159,23 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
                     if len(keyword.word) > 0 and not Keyword.objects.filter(word=keyword.word).exists():
                         print('new keyword:', keyword)
                         self.object.keyword.create(word=keyword.word)
-                        # new_keyword = keyword.save()
+                        # new_keyword = keyword.save(force_insert=True)
                         # self.object.keyword.add(new_keyword)
-                        # self.object.save()
         return super().form_valid(form)
 
     def get_success_url(self):
+        """
+        Returns url for redirect on successful update object
+        """
         return reverse_lazy('interaction-details', args=[self.object.pk])
 
 
 class InteractionDeleteView(PermissionRequiredMixin, DeleteView):
-    model = Interaction
-    permission_required = 'interaction.delete_interaction'
+    model = Interaction  # object model class
+    permission_required = 'interaction.delete_interaction'  # (str) permission to see the page
 
     def get_success_url(self):
+        """
+        Returns url for redirect on successful delete object
+        """
         return reverse_lazy('project-details', args=[self.object.project.pk])

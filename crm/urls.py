@@ -1,3 +1,6 @@
+"""
+This module contains list of urlpatterns for crm application
+"""
 from django.urls import path, include
 from django.views.i18n import JavaScriptCatalog
 from . import views
@@ -20,12 +23,10 @@ project_urlpatterns = [
     path('delete/<int:pk>/', views.ProjectDeleteView.as_view(), name='project-delete'),
 ]
 
-
 urlpatterns = [
     path('', views.IndexTemplateView.as_view(), name='index'),
     path('clients/', include(client_urlpatterns)),
     path('projects/', include(project_urlpatterns)),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]
 

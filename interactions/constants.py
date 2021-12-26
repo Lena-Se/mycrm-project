@@ -1,16 +1,14 @@
+"""
+In this module there are constant data for interactions application
+"""
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# INTERACTION_CHOICES = [
-#     ('request', 'Заявка'),
-#     ('mail', 'Письмо'),
-#     ('site', 'Сайт'),
-#     ('call', 'Звонок'),
-#     ('initiative', 'Инициатива компании')
-# ]
-
 
 class InteractionChoices(models.TextChoices):
+    """
+    In this class there are choices data for Interaction model reference_channel field
+    """
     ONREQUEST = 'request', _('Заявка')
     MAIL = 'mail', _('Письмо')
     SITE = 'site', _('Сайт')

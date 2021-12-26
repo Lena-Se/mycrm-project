@@ -1,26 +1,27 @@
+"""
+This module contains class-based views for crm application representing
+"""
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-
 from interactions.models import Interaction
 from .filters import ClientFilter, ProjectFilter
 from .models import Client, Project
 from .forms import PhoneInlineFormset, EmailInlineFormset, ProjectForm
 
 
-# Create your views here.
 class IndexTemplateView(LoginRequiredMixin, generic.TemplateView):
     """
     Class representing view page from template
-    attributes:
-    template_name (str): name of template file for view
+    Attributes:
+        template_name (str): name of template file for view
     """
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
         """
-        overrides standart get_context_data, extends context with additional data
+        overrides standard get_context_data method, extends context with additional data about clients and projects
         """
         context = super().get_context_data(**kwargs)
         context['client_count'] = Client.objects.all().count()
@@ -32,6 +33,8 @@ class IndexTemplateView(LoginRequiredMixin, generic.TemplateView):
 class FilteredListView(generic.ListView):
     """
     Base class for making filtered listviews.
+    Attributes:
+        filterset_class: class with set of filters
     """
     filterset_class = None
 
@@ -55,6 +58,11 @@ class FilteredListView(generic.ListView):
 class ClientsListView(LoginRequiredMixin, FilteredListView):
     """
     Class representing View displaying list of all Client model objects.
+    Attributes:
+        model: object model for listview
+        paginate_by (int): count of objects on page
+        paginate_orphans (int): min count of objects on last page
+        filteerset_class: class containing set of filters for objects list
     """
     model = Client
     paginate_by = 3
@@ -64,30 +72,30 @@ class ClientsListView(LoginRequiredMixin, FilteredListView):
 
 class ClientDetailView(LoginRequiredMixin, generic.DetailView):
     """
-    Class representing View displaying data of Client model object.
+    Class representing View displaying data of single Client model object.
+    Attributes:
+        model: object model for view details
     """
     model = Client
 
 
 class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
     """
-    Class representing ViewForm for creating new object of Client model.
-    Based on generic.ClientView
-    attributes:
-    model - model-class representing object's data
-    fields - list of fields for displaying on form
-    permission_required - name of permission required to see the result page
-    methods:
-    get_context_data(self, **kwargs) - overriding the standard get_context_data method
-    to expand the context with inlineFormSets of related data.
-    Returns extended context.
+    Class representing ViewForm for creating new Client.
+    Attributes:
+        model (class): model-class representing object's data
+        fields (list): list of fields for displaying on form
+        permission_required (str): name of permission required to see the result page
     """
     model = Client
     fields = ['company_name', 'contact_person', 'description', 'address']
-    # success_url = reverse_lazy('clients')
     permission_required = 'crm.add_client'
 
     def get_context_data(self, **kwargs):
+        """
+        Overriding the standard get_context_data method to expand the context with inlineFormSets of related data.
+        Returns extended context.
+        """
         context = super(ClientCreateView, self).get_context_data(**kwargs)
         if self.request.POST:
             context['phonesFormset'] = PhoneInlineFormset(self.request.POST)
@@ -100,6 +108,9 @@ class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
         return context
 
     def form_valid(self, form):
+        """
+        Ovverrides form_valid method to save data from inlineFormSets of related data.
+        """
         context = self.get_context_data(form=form)
         formset_phone = context['phonesFormset']
         formset_email = context['emailsFormset']
@@ -115,27 +126,29 @@ class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
             return super().form_invalid(form)
 
     def get_success_url(self):
+        """
+        Returns url for redirect on successful create object
+        """
         return reverse_lazy('client-details', args=[self.object.slug])
 
 
 class ClientUpdateView(generic.UpdateView):
     """
     Class representing ViewForm for editing data for object of Client model.
-    Based on generic.UpdateView
-    attributes:
-    model - model-class representing object's data
-    fields - list of fields for displaying on form
-
-    methods:
-    get_context_data(self, **kwargs) - overriding the standard get_context_data method for
-    to expand the context with inlineFormSets of related data.
-    Returns extended context.
+    Attributes:
+        model (str): model-class representing object's data
+        fields (list): list of fields for displaying on form
+        permission_required (str): name of permission required to see the result page
     """
     model = Client
     fields = ['company_name', 'contact_person', 'description', 'address']
     permission_required = 'crm.change_client'
 
     def get_context_data(self, **kwargs):
+        """
+        Overriding the standard get_context_data method to expand the context with inlineFormSets of related data.
+        Returns extended context.
+        """
         context = super(ClientUpdateView, self).get_context_data(**kwargs)
         if self.request.POST:
             context['phonesFormset'] = PhoneInlineFormset(self.request.POST, instance=self.object)
@@ -152,7 +165,6 @@ class ClientUpdateView(generic.UpdateView):
         formset_phone = context['phonesFormset']
         formset_email = context['emailsFormset']
         if formset_phone.is_valid() and formset_email.is_valid():
-            #form.save()
             self.object = form.save(commit=False)
             formset_phone.instance = self.object
             formset_phone.save()
@@ -164,51 +176,79 @@ class ClientUpdateView(generic.UpdateView):
             return super().form_invalid(form)
 
     def get_success_url(self):
+        """
+        Returns url for redirect on successful update object
+        """
         return reverse_lazy('client-details', args=[self.object.slug])
 
 
 class ClientDeleteView(PermissionRequiredMixin, generic.DeleteView):
-    model = Client
-    success_url = reverse_lazy('clients')
-    permission_required = 'crm.delete_client'
+    """
+    Class for deleting Client objects
+    """
+    model = Client  # model-class of deleting object
+    success_url = reverse_lazy('clients')  # url for redirection on success
+    permission_required = 'crm.delete_client'  # (str) permission that required to see this page
 
 
 class ProjectsListView(LoginRequiredMixin, FilteredListView):
-    model = Project
-    paginate_by = 3
-    paginate_orphans = 1
-    filterset_class = ProjectFilter
+    """
+    Class representing projects list display
+    """
+    model = Project  # object model class
+    paginate_by = 3  # (int) count of objects on page
+    paginate_orphans = 1  # (int) min count of objects on page
+    filterset_class = ProjectFilter  # class with set of filters for Project model
 
 
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    """
+    Class representing single Project model object view
+    Attributes:
+        model: object model class
+    """
     model = Project
 
 
 class ProjectCreateView(PermissionRequiredMixin, generic.CreateView):
-    model = Project
-    form_class = ProjectForm
-    client = None
-    permission_required = 'crm.add_project'
+    """
+    Class representing ViewForm for creating new Client.
+    """
+    model = Project  # model object class
+    form_class = ProjectForm  # model form for creating object
+    client = None  # related object
+    permission_required = 'crm.add_project'  # permission to see the page
 
     def get_context_data(self, **kwargs):
+        """
+        Returns context extended with Client object derived from slug in request.
+        """
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
         self.client = get_object_or_404(Client, slug=self.kwargs['client_slug'])
-        print(self.client)
         context['client'] = self.client
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Extends post method with Client object data for Project company field
+        """
         self.client = get_object_or_404(Client, slug=self.kwargs['client_slug'])
         return super().post(request, *args, kwargs)
 
     def form_valid(self, form):
+        """
+        Overrides form_valid method to add Client datd for new Project object
+        """
         self.object = form.save(commit=False)
         self.object.company = self.client
         self.object.save()
         return super(ProjectCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('client-details', args=[self.client.slug])
+        """
+        Returns url for redirect on successful create object
+        """
+        return reverse_lazy('project-details', args=[self.object.pk])
 
 
 class ProjectUpdateView(PermissionRequiredMixin, generic.UpdateView):
@@ -217,19 +257,22 @@ class ProjectUpdateView(PermissionRequiredMixin, generic.UpdateView):
     Based on generic.UpdateView
     attributes:
     model - model-class representing object's data
-
-    methods:
-
     """
-    model = Project
-    form_class = ProjectForm
-    permission_required = 'crm.change_project'
+    model = Project  # model object class
+    form_class = ProjectForm  # model form for updating object
+    permission_required = 'crm.change_project'  # permission to see the page
 
     def get_success_url(self):
+        """
+          Returns url for redirect on successful update object
+        """
         return reverse_lazy('project-details', args=[self.object.id])
 
 
 class ProjectDeleteView(PermissionRequiredMixin, generic.DeleteView):
-    model = Project
-    success_url = reverse_lazy('projects')
-    permission_required = 'crm.delete_project'
+    """
+    Class for deleting Client objects
+    """
+    model = Project  # model object class
+    success_url = reverse_lazy('projects')  # # url for redirection on success
+    permission_required = 'crm.delete_project'  # permission to see the page
