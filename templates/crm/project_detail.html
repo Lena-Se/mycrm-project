@@ -21,12 +21,14 @@
          {% endif %}
     </div>
         {% if request.user.get_manager_access %}
+
         <div class="col-5 mx-5 ">
             <p> <h3> Взаимодействия по проекту: </h3>  <a href="{% url 'interaction-create' project.id %} ">Добавить</a> </p>
              <ol>
                  {% for interaction in project.interaction_set.all %}
                  <li><p></p><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </p></a>
-                 <p>Менеджер: {{ interaction.manager.get_user_naming }}</p>
+                 <p>Менеджер: {{ interaction.manager.get_user_naming }}
+                     {% if interaction.rating %}   рейтинг: {{interaction.rating}} {% endif%}</p>
                      <p>{{ interaction.description | safe }}</p>
                  </li>
                 {% endfor %}

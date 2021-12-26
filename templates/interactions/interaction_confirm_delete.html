@@ -3,7 +3,7 @@
 
 {% block content %}
 
-
+{% if interaction is None or interaction.manager == request.user %}
 <h1>Удалить взаимодействие</h1>
 
 <p>Вы уверены, что хотите удалить взаимодействие {{ interaction }} {% if interaction.project.company %} (компания {{interaction.project.company}}){%endif%}?</p>
@@ -12,5 +12,7 @@
   {% csrf_token %}
   <input type="submit" action="" value="Да, удалить." />
 </form>
-
+  {% else %}
+    <h5>У вас недостаточно прав для просмотра данной страницы. <a href="{% url 'login'%}?next={{request.path}}">Сменить пользователя?</a></h5>
+  {%endif%}
 {% endblock %}

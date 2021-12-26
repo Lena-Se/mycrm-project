@@ -24,7 +24,7 @@
   </div>
  <p> <h3> Ваши взаимодействия по проектам:</h3></p>
              <ol>
-                 {% for interaction in interactions %}
+                 {% for interaction in user.interaction_set.all %}
                  <li><p></p><a href="{{ interaction.get_absolute_url }}"> {{ interaction }} </p></a>
                   <p>{{ interaction.description | safe }}</p>
                  </li>

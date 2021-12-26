@@ -29,10 +29,11 @@ urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 
+# urlpatterns for interaction views
 interactions_urlpatterns = [
     path('', views.InteractionsListView.as_view(), name='interactions'),
     path('details/<int:pk>/', views.InteractionDetailView.as_view(), name='interaction-details'),
-    path('create/<int:project_id>', views.InteractionCreateView.as_view(), name='interaction-create'),
+    path('create/<int:project_pk>', views.InteractionCreateView.as_view(), name='interaction-create'),
     path('update/<int:pk>/', views.InteractionUpdateView.as_view(), name='interaction-update'),
     path('delete/<int:pk>/', views.InteractionDeleteView.as_view(), name='interaction-delete'),
     path('add_mark/<int:pk>/', views.InteractionAddMarkRedirectView.as_view(), name='add-mark'),

@@ -2,6 +2,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
+
+from interactions.models import Interaction
 from .filters import ClientFilter, ProjectFilter
 from .models import Client, Project
 from .forms import PhoneInlineFormset, EmailInlineFormset, ProjectForm
@@ -9,16 +11,28 @@ from .forms import PhoneInlineFormset, EmailInlineFormset, ProjectForm
 
 # Create your views here.
 class IndexTemplateView(LoginRequiredMixin, generic.TemplateView):
+    """
+    Class representing view page from template
+    attributes:
+    template_name (str): name of template file for view
+    """
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
+        """
+        overrides standart get_context_data, extends context with additional data
+        """
         context = super().get_context_data(**kwargs)
         context['client_count'] = Client.objects.all().count()
         context['project_count'] = Project.objects.all().count()
+        context['interaction_count'] = Interaction.objects.all().count()
         return context
 
 
 class FilteredListView(generic.ListView):
+    """
+    Base class for making filtered listviews.
+    """
     filterset_class = None
 
     def get_queryset(self):
@@ -38,7 +52,10 @@ class FilteredListView(generic.ListView):
         return context
 
 
-class ClientsListView(LoginRequiredMixin, FilteredListView):  # (FilterView):  # (FilteredListView):
+class ClientsListView(LoginRequiredMixin, FilteredListView):
+    """
+    Class representing View displaying list of all Client model objects.
+    """
     model = Client
     paginate_by = 3
     paginate_orphans = 1
@@ -46,13 +63,28 @@ class ClientsListView(LoginRequiredMixin, FilteredListView):  # (FilterView):  #
 
 
 class ClientDetailView(LoginRequiredMixin, generic.DetailView):
+    """
+    Class representing View displaying data of Client model object.
+    """
     model = Client
 
 
 class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
+    """
+    Class representing ViewForm for creating new object of Client model.
+    Based on generic.ClientView
+    attributes:
+    model - model-class representing object's data
+    fields - list of fields for displaying on form
+    permission_required - name of permission required to see the result page
+    methods:
+    get_context_data(self, **kwargs) - overriding the standard get_context_data method
+    to expand the context with inlineFormSets of related data.
+    Returns extended context.
+    """
     model = Client
-    fields = ['company_name', 'contact_person', 'description', 'address']  # , 'slug']
-    success_url = reverse_lazy('clients')
+    fields = ['company_name', 'contact_person', 'description', 'address']
+    # success_url = reverse_lazy('clients')
     permission_required = 'crm.add_client'
 
     def get_context_data(self, **kwargs):
@@ -72,11 +104,6 @@ class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
         formset_phone = context['phonesFormset']
         formset_email = context['emailsFormset']
         if formset_phone.is_valid() and formset_email.is_valid():
-            # form.save()
-            # formset_phone.instance = self.object
-            # formset_phone.save()
-            # formset_email.instance = self.object
-            # formset_email.save()
             self.object = form.save()
             formset_phone.instance = self.object
             formset_phone.save()
@@ -86,6 +113,9 @@ class ClientCreateView(PermissionRequiredMixin, generic.CreateView):
             return super().form_valid(form)
         else:
             return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('client-details', args=[self.object.slug])
 
 
 class ClientUpdateView(generic.UpdateView):

@@ -1,7 +1,5 @@
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView
-
-from interactions.models import Interaction
 from .models import User
 
 
@@ -14,12 +12,6 @@ class UserDetailView(DetailView):
 
     def get_object(self, queryset=None):
         return self.request.user
-
-    def get_context_data(self, **kwargs):
-        # self.object = self.request.user
-        context = super(UserDetailView, self).get_context_data(**kwargs)
-        context['interactions'] = Interaction.objects.filter(manager=self.object)
-        return context
 
 
 class UserUpdateView(UpdateView):

@@ -8,7 +8,7 @@ from crm.models import Project
 from crm.views import FilteredListView
 from interactions.filters import InteractionFilter
 from interactions.forms import InteractionForm, KeywordFormSet
-from interactions.models import Interaction, Mark
+from interactions.models import Interaction, Mark, Keyword
 
 
 class InteractionsListView(PermissionRequiredMixin, FilteredListView):
@@ -34,7 +34,7 @@ class InteractionDetailView(PermissionRequiredMixin, DetailView):
 class InteractionAddMarkRedirectView(PermissionRequiredMixin, RedirectView):
     pattern_name = 'interaction-details'
     permission_required = 'interactions.add_mark'
-    queryset = Interaction.objects.all().prefetch_related('Mark').prefetch_related('Project').prefetch_related('Manager')
+    queryset = Interaction.objects.all().prefetch_related('Mark').prefetch_related('Project')
 
     def get_redirect_url(self, *args, **kwargs):
         interaction = get_object_or_404(Interaction, pk=kwargs['pk'])
@@ -61,12 +61,11 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
     model = Interaction
     form_class = InteractionForm
     permission_required = 'interactions.add_interaction'
-    # fields = ['reference_channel', 'description', 'keyword']
     project = None
 
     def get_context_data(self, **kwargs):
         context = super(InteractionCreateView, self).get_context_data(**kwargs)
-        self.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+        self.project = get_object_or_404(Project, pk=self.kwargs['project_pk'])
         print('project=', self.project)
         context['project'] = self.project
         context['client'] = self.project.company
@@ -78,30 +77,26 @@ class InteractionCreateView(PermissionRequiredMixin, CreateView):
             context['keyword_formset'] = KeywordFormSet()  # KeywordInlineFormset()  #
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     self.project = get_object_or_404(Project, id=self.kwargs['project_id'])
-    #     return super().post(request, *args, kwargs)
-
     def form_valid(self, form):
         context = self.get_context_data(form=form)
         formset_keyword = context['keyword_formset']
         self.object = form.save(commit=False)
-        self.object.project = context['project']    # self.project
+        self.object.project = context['project']  # self.project
         self.object.manager = self.request.user
         self.object.save()
         if formset_keyword.is_valid():
-            for obj in formset_keyword:
-                if obj.is_valid():
-                    keyword = obj.save()
-                    self.object.keyword.add(keyword)
-
-
-        # else:
-        #     return super().form_invalid(form)
+            for form_obj in formset_keyword:
+                if form_obj.is_valid():
+                    keyword = form_obj.save(commit=False)
+                    if len(keyword.word) > 0 and not Keyword.objects.filter(word=keyword.word).exists():
+                        print('new keyword:', keyword)
+                        self.object.keyword.create(word=keyword.word)
+                        # new_keyword = keyword.save()
+                        # self.object.keyword.add(new_keyword)
         return super(InteractionCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('project-details', args=[self.project.pk])
+        return reverse_lazy('interaction-details', args=[self.object.pk])
 
 
 class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
@@ -110,6 +105,7 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
     Based on generic.UpdateView
     attributes:
     model - model-class representing object's data
+    form_class - form-based class with set of fields to display on form for editing object data
 
     methods:
 
@@ -117,21 +113,34 @@ class InteractionUpdateView(PermissionRequiredMixin, UpdateView):
     model = Interaction
     form_class = InteractionForm
     permission_required = 'interactions.change_interaction'
-    # fields = ['reference_channel', 'description', 'keyword']
 
-    # if self.request.POST:
-    #     context['actor_form'] = ActorFormSet(self.request.POST, instance=self.object, prefix='actor')
-    # else:
-    #     context['actor_form'] = ActorFormSet(instance=self.object, prefix='actor')
+    def get_context_data(self, **kwargs):
+        context = super(InteractionUpdateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['keyword_formset'] = KeywordFormSet(self.request.POST)
+            context['keyword_formset'].full_clean()
+        else:
+            context['keyword_formset'] = KeywordFormSet()
+        return context
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.manager = self.request.user
+        context = self.get_context_data(form=form)
+        formset_keyword = context['keyword_formset']
+        self.object = form.save()
+        if formset_keyword.is_valid():
+            for form_obj in formset_keyword:
+                if form_obj.is_valid():
+                    keyword = form_obj.save(commit=False)
+                    if len(keyword.word) > 0 and not Keyword.objects.filter(word=keyword.word).exists():
+                        print('new keyword:', keyword)
+                        self.object.keyword.create(word=keyword.word)
+                        # new_keyword = keyword.save()
+                        # self.object.keyword.add(new_keyword)
+                        # self.object.save()
         return super().form_valid(form)
 
-
     def get_success_url(self):
-        return reverse_lazy('interaction-details', args=[self.object.id])
+        return reverse_lazy('interaction-details', args=[self.object.pk])
 
 
 class InteractionDeleteView(PermissionRequiredMixin, DeleteView):
@@ -139,4 +148,4 @@ class InteractionDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'interaction.delete_interaction'
 
     def get_success_url(self):
-        return reverse_lazy('project-details', args=[self.object.project.id])
+        return reverse_lazy('project-details', args=[self.object.project.pk])

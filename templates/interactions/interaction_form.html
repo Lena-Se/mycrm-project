@@ -1,25 +1,41 @@
 {% extends 'base.html' %}
 {% block title %}ITM CRM - редактирование взаимодействия {% endblock %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% block content %}
 
-<!--<script type="text/javascript" src="/~mnb2/a3/admin/jsi18n/"></script>-->
-<!--<script type="text/javascript" src="/jsi18n/"></script>-->
-<!--<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>-->
-<!--<script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>-->
+<script type="text/javascript" src="/~mnb2/a3/admin/jsi18n/"></script>
+<script type="text/javascript" src="/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
 
 
-<div class="container" style="padding-bottom: 30px">
+<div class="container-fluid" style="padding-bottom: 30px">
+{% if interaction is None or interaction.manager == request.user %}
+      {% if interaction %}
+        <h3>Редактирование взаимодействия по проекту {{interaction.project.name}} </h3>
+        {% if interaction.project.company %}
+            <h4>для компании {{interaction.project.company}}</h4>
+        {% endif %}
+      {% else %}
+        <h3>Добавление взаимодействия по проекту {{project.name}} </h3>
+        {% if client %}
+        <h4>для компании {{client}}</h4>
+        {% endif %}
+      {% endif %}
+      <br>
+      <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.media }}
+                {{ form.as_p }}
+                <p>Добавить новые ключевые слова:</p>
+                {{ keyword_formset }}
+            </table>
+            <input type="submit" value="Сохранить" />
+      </form>
+    {% else %}
+        <h5>У вас недостаточно прав для просмотра данной страницы. <a href="{% url 'login'%}?next={{request.path}}">Сменить пользователя?</a></h5>
+    {%endif%}
 
-    <form action="" method="post">
-        {% csrf_token %}
-        <table>
-            {{ form.media }}
-            {{ form.as_p }}
-            {{ keyword_formset }}
-        </table>
-        <input type="submit" value="Сохранить" />
-    </form>
 </div>
 {% endblock %}

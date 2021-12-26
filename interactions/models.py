@@ -12,7 +12,7 @@ class Keyword(models.Model):
     """
       Model representing a keywords for interaction filtering.
     """
-    word_validator = RegexValidator(regex=r'\w+$', message='Уникальное имя для представления клиента латиницей.')
+    word_validator = RegexValidator(regex=r'\w+$', message='Ключевое слово для поиска взаимодействий.')
     word = models.CharField(max_length=300, unique=True, help_text="Добавьте ключевое слово для взаимодействия",
                             verbose_name='ключевое слово', blank=True, db_index=True, validators=[word_validator])
 
@@ -34,7 +34,7 @@ class Interaction(models.Model):
     """
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='взаимодействие', db_index=True)
     reference_channel = models.CharField(max_length=25, choices=InteractionChoices.choices,
-                                         verbose_name='канал обращения', db_index=True)
+                                         verbose_name='канал обращения', db_index=True, default=InteractionChoices.MAIL)
     description = RichTextField(blank=True, verbose_name='описание')
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='изменен')
